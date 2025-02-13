@@ -1,0 +1,36 @@
+<div class="container">
+  <app-sidebar [(courseId)]="courseId" [(videoselected)]="video"></app-sidebar>
+
+  <div class="course-list">
+    <!-- Course Details Section -->
+    <div class="course-item">
+      <h1 class="course-id-title">{{ course().id }}</h1>
+      <h2 class="course-title">{{ course().coursename }}</h2>
+      <p class="course-price">Price: {{ course().courseprice | currency:'INR':'symbol' }}</p>
+      <img [src]="'data:image/png;base64,' + course().coursethumbnail" class="course-thumbnail" #courseItem />      
+
+    </div>
+
+    <!-- Video Details Section -->
+    <div *ngIf="video() && video()?.videourl" class="video-details">
+      <div class="video-content">
+        <h1 class="course-id-title">{{ video()?.id }}</h1>
+        <h2 class="video-title">{{ video()?.vediotitle }}</h2>
+        <p class="video-price">Price: {{ video()?.vedioprice | currency:'INR':'symbol' }}</p>
+        <p class="video-description">{{ video()?.vediodescription }}</p>
+      </div>
+      <div class="video-iframe-container">
+        <iframe
+          [src]="video()?.videourl ?? '' | safeUrlPipe"
+          class="video-iframe"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+    @if(video()&&video()?.videourl)
+    {
+      <app-tasks [videoId]="video()?.id"></app-tasks>
+    }
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<div class="task-pdf-dialog" [ngClass]="{'pdf-shown': isPdfShown}">
+    <!-- Task Information -->
+    <h2 mat-dialog-title>{{ task.task }}</h2>
+    <h3>Task ID: {{ task.id }}</h3>
+    <h4>Task Price: {{ task.taskprice | currency: 'INR':'symbol' }}</h4>
+
+    <!-- Task Container (PDF & Video) -->
+    <div class="task-container">
+      <!-- PDF Viewer -->
+      <div class="pdf-container" *ngIf="pdfUrl">
+        <iframe [src]="pdfUrl | safeUrlPipe" frameborder="0"></iframe>
+      </div>
+
+      <!-- Video -->
+      <div class="task-details-right">
+        <iframe [src]="task.taskurl | safeUrlPipe" frameborder="0"></iframe>
+
+        <!-- Action buttons -->
+        <div class="mat-dialog-actions">
+          <button mat-raised-button color="primary" (click)="closeDialog()">Close</button>
+          <button mat-raised-button color="accent" (click)="viewPdf()">Generate & View PDF</button>
+          <button mat-raised-button color="warn" (click)="downloadPDF()">Download PDF</button>
+        </div>
+      </div>
+    </div>
+</div>

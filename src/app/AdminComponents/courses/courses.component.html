@@ -1,0 +1,13 @@
+<div class="course-list">
+    <div class="course-item" *ngFor="let course of courseSignal(); let i = index" >
+      <a [routerLink]="['/managecourses', course.id]" class="course-link">
+        <div class="course-thumbnail">
+          <img [src]="getImageSrc(course) || 'https://i.pinimg.com/originals/19/a0/14/19a01420f98ad566da0b12aa2816faef.jpg'" alt="Loading" class="course-image" id="course-{{ course.id }}"  #courseItem/>
+        </div>
+        <div class="course-info">
+          <h3>{{ course.coursename }}</h3>
+        </div>
+      </a>
+    </div>
+  </div>
+  

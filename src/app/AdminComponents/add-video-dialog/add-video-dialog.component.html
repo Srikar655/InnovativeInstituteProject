@@ -1,0 +1,41 @@
+<div class="dialog-container">
+    <h2>Video Details Add/Edit Card</h2>
+    <form [formGroup]="myReactiveForm" (ngSubmit)="onSubmit($event)">
+      <input
+        type="url"
+        placeholder="Video URL"
+        formControlName="videourl"
+      />
+      <div *ngIf="myReactiveForm.get('videourl')?.invalid && myReactiveForm.get('videourl')?.touched">
+        <small *ngIf="myReactiveForm.get('videourl')?.errors?.['required']" class="error-message">Video URL is required.</small>
+      </div>
+  
+      <input type="text" placeholder="Title" formControlName="vediotitle" />
+      <div *ngIf="myReactiveForm.get('vediotitle')?.invalid && myReactiveForm.get('vediotitle')?.touched">
+        <small *ngIf="myReactiveForm.get('vediotitle')?.errors?.['required']" class="error-message">Title is required.</small>
+        <small *ngIf="myReactiveForm.get('vediotitle')?.errors?.['minlength']" class="error-message">Title must be at least 6 characters.</small>
+      </div>
+  
+      <input type="text" placeholder="Description" formControlName="vediodescription" />
+      <div *ngIf="myReactiveForm.get('vediodescription')?.invalid && myReactiveForm.get('vediodescription')?.touched">
+        <small *ngIf="myReactiveForm.get('vediodescription')?.errors?.['required']" class="error-message">Description is required.</small>
+      </div>
+  
+      <input type="text" placeholder="Video Price" formControlName="vedioprice" />
+      <div *ngIf="myReactiveForm.get('vedioprice')?.invalid && myReactiveForm.get('vedioprice')?.touched">
+        <small *ngIf="myReactiveForm.get('vedioprice')?.errors?.['required']" class="error-message">Video price is required.</small>
+      </div>
+  
+      <button type="submit">Save</button>
+      <button type="button" (click)="openModal($event)">View Video</button>
+    </form>
+  
+    <!-- Popup Overlay with iframe -->
+    <div *ngIf="isPopupOpen" class="popup-overlay active">
+      <div class="dialog">
+        <button class="close" (click)="closeModal($event)">&times;</button>
+        <iframe width="560" height="315" [src]="videoUrl | safeUrlPipe" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+  

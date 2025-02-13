@@ -1,0 +1,34 @@
+<div class="sidebar-container">
+  <!-- Floating + Button -->
+  <button mat-fab class="add-video-btn" (click)="openAddVideoDialog()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <div class="infinite-scroll-container" 
+      infiniteScroll 
+      [infiniteScrollDistance]="1.5"  
+      [infiniteScrollThrottle]="500"  
+      (scrolled)="onScroll()"
+      [scrollWindow]="false">
+      
+    <div class="sidebar-header">
+      <h2>Video Sidebar</h2>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-item" *ngFor="let video of videos()" (click)="onVideoSelect(video)">
+        <iframe
+          [src]="video.videourl | safeUrlPipe"
+          class="sidebar-thumbnail"
+          frameborder="0"
+          allowfullscreen>
+        </iframe>
+        <h3 class="sidebar-title">{{ video.vediotitle }}</h3>
+      </div>
+    </div>
+
+    <div *ngIf="loadingVideos" class="loading-message">
+      <p>Loading more videos...</p>
+    </div>
+  </div>
+</div>

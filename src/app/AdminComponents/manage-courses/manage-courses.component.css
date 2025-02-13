@@ -1,0 +1,204 @@
+/* Container for both Sidebar and Course List */
+.container {
+  display: flex;
+  margin: 0px 20px;
+  gap: 30px;
+  padding-top: 10px;
+}
+
+/* Styling for Sidebar */
+.sidebar {
+  width: 300px;
+  background-color: #f4f4f4;
+  color: #333;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, filter 0.3s ease;
+  filter: blur(5px);
+}
+
+/* Active state for Sidebar */
+.sidebar.active {
+  filter: none;
+}
+
+/* Styling for Course List Section */
+.course-list {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column; /* Stack course, video, and task sections vertically */
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 10px;
+  gap: 30px; /* Add gap between sections */
+}
+
+/* Styling for each course item */
+.course-item {
+  display: flex;
+  flex-direction: row; /* Align course details horizontally */
+  align-items: flex-start;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1000px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  text-align: left;
+  gap: 20px; /* Small gap between the details and thumbnail */
+}
+
+.course-item:hover {
+  transform: scale(1.05);
+}
+
+/* Styling for Course Details */
+.course-id-title {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.course-title {
+  font-size: 1.5rem;
+  color: #1a73e8; /* Make the title bright and blue */
+  margin-bottom: 10px; /* Margin between title and price */
+  display: block;
+  font-weight: bold;
+}
+
+.course-price {
+  font-size: 1.3rem;
+  color: #1a73e8; /* Make the price bright blue to stand out */
+  margin-bottom: 15px;
+  font-weight: 600;
+  display: block;
+}
+
+.course-description {
+  font-size: 1rem;
+  color: #777;
+  margin-top: 10px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.course-thumbnail {
+  width: 200px;
+  height: auto;
+  border-radius: 8px;
+  margin-left: auto; /* Align thumbnail to the right */
+  align-self: flex-start; /* Align the image at the top-right */
+}
+
+/* Styling for Video Details */
+.video-details {
+  display: flex; /* This ensures we place content in two columns (left for text, right for iframe) */
+  flex-direction: row; /* Align content side-by-side */
+  width: 100%;
+  background-color: #f4f4f4;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  gap: 20px; /* Space between text content and iframe */
+}
+
+.video-content {
+  flex: 1; /* Allow video content to take the remaining space */
+  padding-right: 20px; /* Small gap between content and iframe */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Align the content neatly */
+}
+
+.video-title {
+  font-size: 1.3rem;
+  color: #1a73e8; /* Bright blue for video title */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.video-price {
+  font-size: 1.3rem;
+  color: #1a73e8; /* Bright blue for video price */
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.video-description {
+  font-size: 1rem;
+  color: #777;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  overflow-y: auto;  /* Make description scrollable */
+  max-height: 300px; /* Set a max-height for the description area */
+}
+
+.video-iframe-container {
+  flex-shrink: 0; /* Prevent iframe from shrinking */
+  width: 350px; /* Set width of iframe */
+  height: 200px; /* Set height of iframe */
+}
+
+.video-iframe {
+  width: 100%;
+  height: 100%; /* Ensure iframe fills its container */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slight shadow for iframe */
+  margin-top: 10px; /* Add a small margin to bring it closer to the description */
+}
+
+
+/* Responsive Styling for Sidebar and Course List */
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: 50vh;
+  }
+
+  .course-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .course-item {
+    width: 90%;
+    max-width: 800px;
+    padding: 20px;
+  }
+
+  .course-thumbnail {
+    width: 100%;
+    height: auto;
+    margin-top: 15px;
+  }
+
+  .video-iframe {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .course-item {
+    width: 100%;
+  }
+
+  .course-thumbnail {
+    height: 200px;
+  }
+
+  .sidebar-thumbnail {
+    height: 150px;
+  }
+}

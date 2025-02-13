@@ -1,0 +1,274 @@
+/* General Form Layout */
+form {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 80vh; /* Set a maximum height (adjust as needed) */
+    position: relative;
+  }
+  
+  /* Title */
+  form h2 {
+    text-align: center;
+    font-size: 24px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+  }
+  
+  /* Form input fields */
+  input[type="text"],
+  input[type="url"],
+  input[type="number"],
+  input[type="file"],
+  input[type="button"],
+  input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  /* Button styling */
+  input[type="button"],
+  input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  input[type="button"]:hover,
+  input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
+  input[type="submit"]:disabled,
+  input[type="button"]:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  
+  /* Vedio & Task Section */
+  .vedio-group,
+  .task-group {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    background-color: #fafafa;
+  }
+  
+  .vedio-group input[type="text"],
+  .vedio-group input[type="url"] {
+    width: 48%;
+    display: inline-block;
+    margin-right: 4%;
+  }
+  
+  .vedio-group input[type="button"] {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .task-group input[type="text"],
+  .task-group input[type="file"],
+  .task-group input[type="number"] {
+    width: 48%;
+    display: inline-block;
+    margin-right: 4%;
+    margin-bottom: 10px;
+  }
+  
+  input[type="button"]:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+  }
+  
+  /* Add Video and Add Task Button Styles */
+  input[type="button"] {
+    background-color: #2196F3;
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  input[type="button"]:hover {
+    background-color: #1e88e5;
+  }
+  
+  /* Submit Button Styles */
+  input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  
+  input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
+  /* Scrollable Area */
+  form {
+    overflow-y: auto; /* Allow vertical scrolling */
+    max-height: 80vh; /* This makes the form scrollable when it exceeds the height */
+    padding-right: 10px; /* To prevent content from being hidden behind the scrollbar */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 600px) {
+    form {
+      padding: 15px;
+    }
+  
+    .vedio-group input[type="text"],
+    .vedio-group input[type="url"] {
+      width: 100%;
+      margin-right: 0;
+    }
+  
+    .task-group input[type="text"],
+    .task-group input[type="file"],
+    .task-group input[type="number"] {
+      width: 100%;
+      margin-right: 0;
+    }
+  
+    input[type="submit"],
+    input[type="button"] {
+      width: 100%;
+    }
+  }
+.input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+input[type="url"] {
+  flex: 1; /* Makes the input take up available space */
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.view-btn {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 8px; /* Space between input and button */
+}
+
+.view-btn:hover {
+  background-color: #0056b3;
+}
+
+video {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+/* The Modal Background */
+/* Modal Background */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark overlay */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  position: relative;
+  width: 80%;
+  max-width: 900px; /* Max width for large screens */
+  max-height: 80vh; /* Max height for large screens */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Responsive Video iframe */
+.modal-content iframe {
+  width: 100%;
+  height: 56.25vw; /* 16:9 aspect ratio */
+  max-height: 500px; /* Max height for larger screens */
+  border: none;
+  border-radius: 8px;
+}
+
+/* Close Button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff5c5c;
+  color: white;
+  font-size: 18px;
+  padding: 8px 12px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.close:hover {
+  background-color: #e04f4f;
+}
+
+/* Open Modal */
+.modal.show {
+  display: flex; /* Flex to center the modal content */
+}
+
+/* Modal overlay transition */
+.modal {
+  transition: opacity 0.3s ease;
+}
+
+.modal.show {
+  opacity: 1;
+}
+
+.modal.hide {
+  opacity: 0;
+}
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+}
+

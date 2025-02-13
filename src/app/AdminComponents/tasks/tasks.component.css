@@ -1,0 +1,206 @@
+/* Modal Overlay - keeps the modal background fixed */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Dark background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000; /* To make sure it's on top of other content */
+}
+
+/* Modal Content - style for the actual modal box */
+.modal-content {
+  background: #ffffff;
+  padding: 15px; /* Reduced padding for more compact look */
+  border-radius: 12px;
+  width: 90%;
+  max-width: 1140px;
+  height: 400px; /* Reduced height of modal */
+  overflow-y: auto; /* Allow vertical scrolling if needed */
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  color: #2c3e50;
+}
+
+/* Task Container Styling */
+.tasks-container {
+  position: relative;
+  padding: 10px; /* Reduced padding */
+  background: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Task List layout, 3 tasks in a row */
+.task-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  gap: 20px;
+  justify-content: center;
+  padding: 10px;
+}
+
+/* Task item */
+.task-item {
+  background: #ffffff;
+  padding: 10px; /* Reduced padding */
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease-in-out;
+  width: 350px; /* Increased width */
+  max-width: 400px; /* Maximum width */
+  cursor: pointer; /* Add cursor pointer to make it clickable */
+}
+
+/* Hover effect for task items */
+.task-item:hover {
+  transform: scale(1.05);
+  cursor: pointer; /* Ensure the pointer cursor shows on hover */
+}
+
+/* Task item text styles */
+.task-item h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.task-item h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #3498db;
+}
+
+.task-item h4 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #27ae60;
+}
+
+/* Close button inside modal */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #555;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+/* Show More button functionality */
+.show-more-btn {
+  position: absolute;
+  top: 10px; /* Positioning the button inside container */
+  right: 10px;
+  padding: 8px 15px;
+  background: #3498db;
+  color: white;
+  border: 1px solid #2980b9;
+  border-radius: 5px;
+  cursor: pointer; /* Add cursor pointer to make it clickable */
+  transition: 0.3s;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.show-more-btn:hover {
+  background: #2980b9;
+  color: white;
+  border-color: #3498db;
+  cursor: pointer; /* Ensure pointer cursor shows on hover */
+}
+
+/* Task Details Modal Overlay */
+.task-details-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Dark background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001; /* On top of other content */
+}
+
+/* Task Details Modal Content */
+.task-details-modal-content {
+  display: flex; /* Use Flexbox for side-by-side layout */
+  background: #fff;
+  padding: 20px;
+  width: 80%;
+  max-width: 1200px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1002;
+}
+
+/* Left side (task details) */
+.task-details-left {
+  flex: 1;
+  padding-right: 20px;
+  border-right: 2px solid #ccc;
+}
+
+.task-details-left h2,
+.task-details-left h3,
+.task-details-left h4 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.task-details-left h2 {
+  font-size: 1.8rem;
+}
+
+.task-details-left h3 {
+  font-size: 1.5rem;
+  color: #3498db;
+}
+
+.task-details-left h4 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #27ae60;
+}
+
+/* Right side (iframe) */
+.task-details-right {
+  flex: 1;
+}
+
+.task-details-right iframe {
+  width: 100%;
+  height: 400px;
+  border: none;
+}
+
+/* Modal Close Button (Optional if you want a close button inside Task Details Modal) */
+.task-details-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 1.5rem;
+  color: #555;
+  cursor: pointer;
+}
+
+.task-details-close-btn:hover {
+  color: red;
+}

@@ -1,0 +1,161 @@
+<form [formGroup]="myReactiveForm" (ngSubmit)="save($event)">
+  <!-- Course Name -->
+  <input
+    type="file"
+    name="coursethumbnail"
+    placeholder="Course Thumbnail"
+    (change)="thumbnailchange($event)"
+  /><br />
+  <input
+    type="text"
+    name="coursename"
+    placeholder="Course Name"
+    formControlName="coursename"
+  /><br />
+  <!-- Course Name Validation Errors -->
+  <div *ngIf="myReactiveForm.get('coursename')?.invalid && myReactiveForm.get('coursename')?.touched">
+    <small *ngIf="myReactiveForm.get('coursename')?.errors?.['required']" class="error-message">Course name is required.</small>
+  </div>
+
+  <!-- Course Price -->
+  <input
+    type="text"
+    name="courseprice"
+    placeholder="Course Price"
+    formControlName="courseprice"
+  /><br />
+  <!-- Course Price Validation Errors -->
+  <div *ngIf="myReactiveForm.get('courseprice')?.invalid && myReactiveForm.get('courseprice')?.touched">
+    <small *ngIf="myReactiveForm.get('courseprice')?.errors?.['required']" class="error-message">Course price is required.</small>
+  </div>
+
+  <!-- Videos Section -->
+  <div *ngIf="myReactiveForm.get('coursename')?.value && myReactiveForm.get('courseprice')?.value.trim() !== ''">
+    <div formArrayName="vedios">
+      <div *ngFor="let vedio of vedios.controls; let vedioindex = index" [formGroupName]="vedioindex">
+        
+        <!-- Video URL -->
+        <input
+          type="url"
+          placeholder="Video URL"
+          formControlName="videourl"
+        />
+        <button type="button" (click)="openModal($event,vedio.get('videourl')?.value)">View Video</button>
+        <!-- Video URL Validation Errors -->
+        <div *ngIf="vedio.get('videourl')?.invalid && vedio.get('videourl')?.touched">
+          <small *ngIf="vedio.get('videourl')?.errors?.['required']" class="error-message">Video URL is required.</small>
+        </div>
+
+        <!-- Video Title -->
+        <input type="text" placeholder="Title" formControlName="vediotitle" />
+        <!-- Video Title Validation Errors -->
+        <div *ngIf="vedio.get('vediotitle')?.invalid && vedio.get('vediotitle')?.touched">
+          <small *ngIf="vedio.get('vediotitle')?.errors?.['required']" class="error-message">Title is required.</small>
+          <small *ngIf="vedio.get('vediotitle')?.errors?.['minlength']" class="error-message">Title must be at least 6 characters.</small>
+          <small *ngIf="vedio.get('vediotitle')?.errors?.['maxlength']" class="error-message">Title cannot be more than 100 characters.</small>
+        </div>
+
+        <!-- Video Description -->
+        <input type="text" placeholder="Description" formControlName="vediodescription" />
+        <!-- Video Description Validation Errors -->
+        <div *ngIf="vedio.get('vediodescription')?.invalid && vedio.get('vediodescription')?.touched">
+          <small *ngIf="vedio.get('vediodescription')?.errors?.['required']" class="error-message">Description is required.</small>
+          <small *ngIf="vedio.get('vediodescription')?.errors?.['minlength']" class="error-message">Description must be at least 6 characters.</small>
+          <small *ngIf="vedio.get('vediodescription')?.errors?.['maxlength']" class="error-message">Description cannot be more than 500 characters.</small>
+        </div>
+
+        <!-- Video Price -->
+        <input
+          type="text"
+          placeholder="Video Price"
+          formControlName="vedioprice"
+        />
+        <!-- Video Price Validation Errors -->
+        <div *ngIf="vedio.get('vedioprice')?.invalid && vedio.get('vedioprice')?.touched">
+          <small *ngIf="vedio.get('vedioprice')?.errors?.['required']" class="error-message">Video price is required.</small>
+        </div>
+
+        <!-- Tasks Section -->
+        <div formArrayName="tasks">
+          <div
+            *ngFor="let task of getTasks(vedioindex).controls; let taskIndex = index"
+            [formGroupName]="taskIndex"
+          >
+            <!-- Task -->
+            <input
+              type="text"
+              placeholder="Define the Task"
+              formControlName="task"
+            />
+            <!-- Task Validation Errors -->
+            <div *ngIf="task.get('task')?.invalid && task.get('task')?.touched">
+              <small *ngIf="task.get('task')?.errors?.['required']" class="error-message">Task is required.</small>
+            </div>
+            <input
+              type="url"
+              placeholder="Task URL"
+              formControlName="taskurl"
+            />
+            <button type="button" (click)="openModal($event,task.get('taskurl')?.value)">View Video</button>
+            <!-- Video URL Validation Errors -->
+            <div *ngIf="task.get('taskurl')?.invalid && task.get('taskurl')?.touched">
+              <small *ngIf="task.get('taskurl')?.errors?.['required']" class="error-message">Taks Video URL is required.</small>
+            </div>
+
+            <!-- Task Image -->
+            <input
+              type="file"
+              (change)="fileChanged($event, vedioindex, taskIndex)"
+              multiple="true"
+            />
+            <!-- Task Image Validation Errors -->
+            <div *ngIf="task.get('taskimage')?.invalid && task.get('taskimage')?.touched">
+              <small *ngIf="task.get('taskimage')?.errors?.['required']" class="error-message">Task image is required.</small>
+            </div>
+
+            <!-- Task Price -->
+            <input
+              type="text"
+              placeholder="Enter Task Price"
+              formControlName="taskprice"
+            />
+            <!-- Task Price Validation Errors -->
+            <div *ngIf="task.get('taskprice')?.invalid && task.get('taskprice')?.touched">
+              <small *ngIf="task.get('taskprice')?.errors?.['required']" class="error-message">Task price is required.</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Task Button - Only shown when all video details are valid -->
+        <input 
+          type="button" 
+          value="Add Task" 
+          (click)="addTasks(vedioindex,$event)"
+          *ngIf="vedio.get('videourl')?.valid && vedio.get('vediotitle')?.valid && vedio.get('vediodescription')?.valid && vedio.get('vedioprice')?.valid"
+        />
+      </div>
+    </div>
+
+    <input
+      type="button"
+      value="Add Video"
+      (click)="addVedios($event)"
+      [disabled]="myReactiveForm.invalid"
+    />
+  </div>
+
+  <input type="submit" value="Save" [disabled]="myReactiveForm.invalid" />
+</form>
+
+<!-- Modal for Video Preview -->
+<div class="modal" [ngClass]="{'show': isModalOpen}" (click)="closeModal($event)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close" (click)="closeModal($event)">X</button>
+    <iframe
+      *ngIf="embedUrl"
+      [src]="embedUrl | safeUrlPipe"
+      frameborder="0"
+      allowfullscreen
+    ></iframe>
+  </div>
+</div>

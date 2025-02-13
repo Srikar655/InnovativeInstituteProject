@@ -1,0 +1,105 @@
+/* General styles for headings */
+.task-pdf-dialog h2,
+.task-pdf-dialog h3,
+.task-pdf-dialog h4 {
+  text-align: center;
+  color: #1976d2;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* Mat-dialog-container starts small and expands dynamically */
+.mat-dialog-container {
+  width: 50vw; /* Start smaller */
+  max-width: 80vw; /* Allow expansion */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  transition: all 0.5s ease;
+}
+
+/* Expand dialog when PDF is shown */
+.pdf-shown .mat-dialog-container {
+  width: 80vw; /* Expand width */
+  max-height: 90vh; /* Expand height */
+}
+
+/* Task container for PDF & Video */
+.task-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  transition: all 0.5s ease;
+}
+
+/* PDF container */
+.pdf-container {
+  flex: 2;
+  display: none; /* Hide initially */
+}
+
+/* Show PDF properly */
+.pdf-shown .pdf-container {
+  display: block;
+}
+
+/* PDF iframe */
+.pdf-container iframe {
+  width: 100%;
+  height: 450px;
+  border: none;
+}
+
+/* Task details container */
+.task-details-right {
+  flex: 1;
+  transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px; /* Maintain spacing */
+}
+
+/* Video iframe */
+.task-details-right iframe {
+  width: 360px;
+  height: 240px;
+  object-fit: cover;
+  transition: all 0.5s ease;
+}
+
+/* Adjust video size when PDF is shown */
+.pdf-shown .task-details-right iframe {
+  width: 380px;
+  height: 250px;
+}
+
+/* Button container */
+.mat-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* Increase space between buttons */
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* Button styles */
+.mat-dialog-actions button {
+  min-width: 160px; /* Adjust button size */
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+/* Adjust button layout when PDF is shown */
+.pdf-shown .mat-dialog-actions {
+  flex-direction: row; /* Keep buttons in one row */
+  justify-content: center;
+  align-items: center;
+}
