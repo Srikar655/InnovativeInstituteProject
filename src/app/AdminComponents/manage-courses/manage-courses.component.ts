@@ -10,6 +10,8 @@ import { TasksComponent } from '../tasks/tasks.component';
 import { Course } from '../../models/course';
 import { MatDialog } from '@angular/material/dialog';
 import { AddVideoDialogComponent } from '../add-video-dialog/add-video-dialog.component';
+import { CoursecrudService } from '../../services/coursecrud.service';
+import { PopupserviceService } from '../../services/popupservice.service';
 
 @Component({
   selector: 'app-manage-courses',
@@ -20,7 +22,9 @@ import { AddVideoDialogComponent } from '../add-video-dialog/add-video-dialog.co
 export class ManageCoursesComponent implements OnInit {
   route = inject(ActivatedRoute);
   service = inject(CoursemanageService);
+  videoService=inject(CoursecrudService)
   courseId!: number;
+  videos=this.videoService.videos;
   dialogRef=inject(MatDialog);
   course = signal<Course>({
     id: 0,
@@ -28,13 +32,20 @@ export class ManageCoursesComponent implements OnInit {
     courseprice: 0,
     coursethumbnail: undefined
   });
+  popupservice=inject(PopupserviceService);
   courseThumbnails:Uint8Array[]=[]
-  video=model<Vedio>();
+  video=model<Vedio | null>();
   ngOnInit(): void {
     this.courseId = Number(this.route.snapshot.paramMap.get('id'));
-    this.course = this.service.getCourse(this.courseId);
+    this.service.getCourse(this.courseId).subscribe(
+      {
+        next:(res:any)=>{
+          this.course.set(res);
+        }
+      }
+    );
   }
-  edit(event:Event,video:Vedio | undefined)
+  editVideo(event:Event,video:Vedio | undefined)
   {
     const dialogReference = this.dialogRef.open(AddVideoDialogComponent, {
           width: '50vw',  
@@ -44,12 +55,22 @@ export class ManageCoursesComponent implements OnInit {
           panelClass: 'custom-dialog-container',
           data: { video:video,courseId:this.courseId},
         });
-    
-        dialogReference.afterClosed().subscribe(result => {
-          /*if (result) {
-            console.log('New video added:', result);
-            this.videos().push(result);
-          }*/
-        });
+  }
+  deleteVideo(event:Event,video:Vedio | undefined)
+  {
+    this.videoService.deletevideo(video?.id).subscribe(
+      {
+        next:(res:any)=>
+        {
+          this.video.set(null);
+          this.popupservice.sweetSuccessAllert(res.response);
+        },
+        error:(error:any)=>
+        {
+          console.log(error);
+          this.popupservice.sweetUnSuccessAllert("Can't Delete Video Please Try Again....")
+        }
+      }
+    );
   }
 }

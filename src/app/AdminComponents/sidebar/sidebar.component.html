@@ -16,7 +16,7 @@
     </div>
 
     <div class="sidebar">
-      <div class="sidebar-item" *ngFor="let video of videos()" (click)="onVideoSelect(video)">
+      <div class="sidebar-item" *ngFor="let video of videos();let i= index" (click)="onVideoSelect(i)">
         <iframe
           [src]="video.videourl | safeUrlPipe"
           class="sidebar-thumbnail"
@@ -30,5 +30,6 @@
     <div *ngIf="loadingVideos" class="loading-message">
       <p>Loading more videos...</p>
     </div>
+    
   </div>
 </div>

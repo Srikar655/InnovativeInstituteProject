@@ -6,6 +6,7 @@ import { SafeUrlPipePipe } from '../../pipes/safe-url-pipe.pipe';
 import { CoursemanageService } from '../../services/coursemanage.service';
 import Swal from 'sweetalert2';
 import { tap } from 'rxjs';
+import { PopupserviceService } from '../../services/popupservice.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class AddCourseComponent implements OnInit {
   isModalOpen: boolean = false;
   embedUrl: string | null = null;
   courseService=inject(CoursemanageService);
+  popupservice=inject(PopupserviceService)
   openModal($event:Event,url:any): void {
     if($event.isTrusted)
     {
@@ -148,33 +150,20 @@ export class AddCourseComponent implements OnInit {
   save($event: Event): void {
     if ($event.isTrusted) {
       if (this.myReactiveForm.valid) {
-         this.courseService.save(this.myReactiveForm.value).pipe(
-         tap( (res: any) => {
-            
+         this.courseService.save(this.myReactiveForm.value).subscribe(
+          {
+            next:(res:any)=>
+            {
               this.myReactiveForm.reset();
-              Swal.fire({
-                icon: 'success',
-                title: 'Course Record Saved Successfully!',
-                text: 'The Course Has Been Added',
-                showCloseButton: true,
-                showConfirmButton: false,
-                timer: 3000,  
-                backdrop: `rgba(0, 123, 255, 0.4)`,
-                didOpen: () => {
-                  const content = Swal.getHtmlContainer();
-                  if (content) {
-                    content.style.animation = 'fadeInUp 0.8s';  
-                  }
-                }
-              });
-          })).subscribe({error:error=>{
-            console.error('Error saving course:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'An error occurred while saving the course. Please try again.',
-            });
-          }});
+              this.popupservice.sweetSuccessAllert("Course Saved Successfully")
+            },
+            error:error=>{
+              console.error('Error saving course:', error);
+              this.popupservice.sweetUnSuccessAllert("Unable To Save Course Please Try Again After Some Time")
+            }
+            
+          }
+         )
       }
     }
   }

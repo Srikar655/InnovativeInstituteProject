@@ -13,31 +13,34 @@ export class CoursemanageService {
 
   constructor(private httpClient:HttpClient) { }
   courseSignal=signal<Course[]>([]);
-  videos=signal<Vedio[]>([]);
+  
   tasks=signal<Task[]>([]);
-  getCourse(courseId: number): import("@angular/core").WritableSignal<any> {
-    const course = signal<any>({});
+  getCourse(courseId: number) {
     const requestUrl = this.url +'/findCourse?courseId='+courseId;
-    this.httpClient.get<any>(requestUrl).pipe(
-        tap(value => {course.set(value)})
-    ).subscribe({
-        error: (error) => console.log("Error:", error)  
-    });
-
-    return course;
+    return this.httpClient.get<any>(requestUrl)
 }
 
 
   save(form: any) {
-   return  this.httpClient.post(this.url+'/addCourse',form);
+   return  this.httpClient.post(this.url+'/addCourse',form).pipe(
+    tap(
+      (res:any)=>
+      {
+        this.courseSignal().push(res);
+      }
+    )
+   );
   }
   
   
   get() {
-    this.httpClient.get<Course[]>(`${this.url}/getCourse`).subscribe({
-      next: (courses) => this.courseSignal.set(courses),
-      error: (error) => console.error('Error fetching courses:', error)
-    });
+   return  this.httpClient.get<Course[]>(`${this.url}/getCourse`).pipe(
+      tap(
+        (courses:any)=>{
+          this.courseSignal.set(courses)
+        }
+      )
+    );
   }
 
   getCourseThumbnail(courseId: number): Observable<Uint8Array> {
@@ -54,29 +57,7 @@ export class CoursemanageService {
   }
   
 
-  getVideos(courseId: number, page: number, fetchSize: number, onScroll: boolean) {
-    const params = new HttpParams()
-      .set('courseId', courseId.toString())
-      .set('size', fetchSize.toString())
-      .set('page', page.toString());
   
-     this.httpClient.post(this.url + '/getVideos', null, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      params: params,
-    }).pipe(
-      tap((res: any) => {
-          if (onScroll) {
-            this.videos.update((videos) => [...videos, ...res]);
-          } else {
-            this.videos.set(res);
-          }
-      })
-    ).subscribe({
-      error: (error) => console.log(error)
-    });
-  }
 
   getTasks(videoId: number, page: number, fetchSize: number, onScroll: boolean) {
     const params = new HttpParams()

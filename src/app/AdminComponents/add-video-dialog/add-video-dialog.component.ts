@@ -9,6 +9,7 @@ import { SafeUrlPipePipe } from '../../pipes/safe-url-pipe.pipe';
 import { CoursecrudService } from '../../services/coursecrud.service';
 import { tap } from 'rxjs';
 import Swal from 'sweetalert2';
+import { PopupserviceService } from '../../services/popupservice.service';
 
 @Component({
   selector: 'app-add-video-dialog',
@@ -29,6 +30,7 @@ export class AddVideoDialogComponent implements OnInit{
   video!:Vedio | null;
   isPopupOpen=false;
   videoUrl:string='';
+  popupservice=inject(PopupserviceService);
   service=inject(CoursecrudService);
   dialog=inject(MatDialogRef<AddVideoDialogComponent>)
   ngOnInit()
@@ -69,37 +71,15 @@ export class AddVideoDialogComponent implements OnInit{
     if($event.isTrusted)
     {
       if (this.myReactiveForm.valid) {
-        console.log("Form Data:", this.myReactiveForm.value);
-        this.service.addVideo(this.myReactiveForm.value).pipe(
-          tap(
-            (res:any)=>
+        this.service.addVideo(this.myReactiveForm.value).subscribe({
+          next:(res:any)=>
             {
-              Swal.fire({
-                          icon: 'success',
-                          title: 'Video Record Saved Successfully!',
-                          text: 'The Vidoe Has Been Added',
-                          showCloseButton: true,
-                          showConfirmButton: false,
-                          timer: 3000,  
-                          backdrop: `rgba(0, 123, 255, 0.4)`,
-                          didOpen: () => {
-                            const content = Swal.getHtmlContainer();
-                            if (content) {
-                              content.style.animation = 'fadeInUp 0.8s';  
-                            }
-                          }
-                        });
-              this.onCancel(res);
-            }
-          )
-        ).subscribe({
+              this.popupservice.sweetSuccessAllert("Video Record Saved Successfully")
+              this.dialog.close();
+            },
           error:error=>{
             console.error('Error saving Vidoe:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'An error occurred while saving the Video. Please try again.',
-            });
+           this.popupservice.sweetUnSuccessAllert('An error occurred while saving the Video. Please try again.');
           }
         })
       }
@@ -108,8 +88,5 @@ export class AddVideoDialogComponent implements OnInit{
   updateVideoPreview() {
     this. videoUrl = this.myReactiveForm.get('videourl')?.value;
   }
-  onCancel(video:Vedio)
-  {
-    this.dialog.close(video);
-  }
+  
 }

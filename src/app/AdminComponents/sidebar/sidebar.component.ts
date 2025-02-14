@@ -8,6 +8,7 @@ import { CoursemanageService } from '../../services/coursemanage.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddVideoDialogComponent } from '../add-video-dialog/add-video-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
+import { CoursecrudService } from '../../services/coursecrud.service';
 @Component({
   selector: 'app-sidebar',
   imports: [SafeUrlPipePipe,CommonModule,FormsModule,InfiniteScrollDirective,MatIconModule],
@@ -16,13 +17,12 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class SidebarComponent {
   courseId=model<number>();
-  service=inject(CoursemanageService);
+  service=inject(CoursecrudService);
   videos=this.service.videos;
   page = 0;
   fetchSize = 3;
   dynamicFetchSize = 3;
   sidebarActive = signal<boolean>(false);
-  noMoreVideos = computed(() => this.videos().length === 0);
   dialogRef=inject(MatDialog);
   loadVideos=computed(()=>
     {
@@ -31,9 +31,10 @@ export class SidebarComponent {
     })
   videoselected=model<Vedio>();
   loadingVideos:boolean=false;
-  onVideoSelect(video:any)
+  onVideoSelect(index:any)
   {
-    this.videoselected.set(video);
+    console.log(index);
+    this.videoselected.set(this.videos()[index]);
   } 
   onScroll()
   {
@@ -46,9 +47,6 @@ export class SidebarComponent {
     this.loadingVideos=false;
   }
   fethVideos() {
-    if (this.noMoreVideos()) {
-      return;
-    }
       this.page += 1; 
       this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, true);
   }
@@ -68,7 +66,6 @@ export class SidebarComponent {
 
     dialogReference.afterClosed().subscribe(result => {
       if (result) {
-        console.log('New video added:', result);
         this.videos().push(result);
       }
     });

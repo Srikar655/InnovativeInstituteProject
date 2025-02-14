@@ -16,8 +16,8 @@
         <div class="video-header">
           <h1 class="course-id-title">{{video()?.id}}</h1>
           <div class="video-actions">
-            <button class="edit-btn" (click)="edit($event,video())">Edit</button>
-            <button class="delete-btn">Delete</button>
+            <button class="edit-btn" (click)="editVideo($event,video())">Edit</button>
+            <button class="delete-btn" (click)="deleteVideo($event,video())" >Delete</button>
           </div>
         </div>
         <h2 class="video-title">{{ video()?.vediotitle }}</h2>

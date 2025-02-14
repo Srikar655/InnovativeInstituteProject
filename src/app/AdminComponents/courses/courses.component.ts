@@ -3,6 +3,7 @@ import { CoursemanageService } from '../../services/coursemanage.service';
 import { Course } from '../../models/course';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { PopupserviceService } from '../../services/popupservice.service';
 
 @Component({
   selector: 'app-courses',
@@ -17,8 +18,15 @@ export class CoursesComponent implements OnInit, AfterViewInit {
 
   @ViewChildren('courseItem') courseElements!: QueryList<ElementRef>;
   cdRef=inject(ChangeDetectorRef);
+  popupservice=inject(PopupserviceService);
   ngOnInit(): void {
-    this.service.get(); // Fetch courses first, without thumbnails
+    this.service.get().subscribe({
+      error:(error:any)=>
+      {
+        console.log(error);
+        this.popupservice.sweetUnSuccessAllert("There Is An Issue With Fetching Courses Please Try Again")
+      }
+    }); // Fetch courses first, without thumbnails
   }
 
   ngAfterViewInit() {
