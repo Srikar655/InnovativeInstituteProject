@@ -7,14 +7,19 @@
       <h1 class="course-id-title">{{ course().id }}</h1>
       <h2 class="course-title">{{ course().coursename }}</h2>
       <p class="course-price">Price: {{ course().courseprice | currency:'INR':'symbol' }}</p>
-      <img [src]="'data:image/png;base64,' + course().coursethumbnail" class="course-thumbnail" #courseItem />      
-
+      <img [src]="'data:image/png;base64,' + course().coursethumbnail" class="course-thumbnail" #courseItem />
     </div>
 
     <!-- Video Details Section -->
     <div *ngIf="video() && video()?.videourl" class="video-details">
       <div class="video-content">
-        <h1 class="course-id-title">{{ video()?.id }}</h1>
+        <div class="video-header">
+          <h1 class="course-id-title">{{video()?.id}}</h1>
+          <div class="video-actions">
+            <button class="edit-btn" (click)="edit($event,video())">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </div>
+        </div>
         <h2 class="video-title">{{ video()?.vediotitle }}</h2>
         <p class="video-price">Price: {{ video()?.vedioprice | currency:'INR':'symbol' }}</p>
         <p class="video-description">{{ video()?.vediodescription }}</p>

@@ -58,8 +58,8 @@ export class SidebarComponent {
   }
   openAddVideoDialog(): void {
     const dialogReference = this.dialogRef.open(AddVideoDialogComponent, {
-      width: '50vw',  // Adjust to the desired percentage of the viewport width
-      height: '80vh', // Adjust to the desired percentage of the viewport height
+      width: '50vw',  
+      height: '80vh', 
       maxWidth: '100vw',
       maxHeight: '100vh',
       panelClass: 'custom-dialog-container',

@@ -117,6 +117,44 @@
   justify-content: space-between; /* Align the content neatly */
 }
 
+/* Styling for the edit and delete buttons */
+.video-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.video-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Styling for Edit and Delete Buttons */
+.edit-btn,
+.delete-btn {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+  background-color: #1465c0;
+}
+
+.delete-btn {
+  background-color: #e84141;
+}
+
+.delete-btn:hover {
+  background-color: #d43737;
+}
+
 .video-title {
   font-size: 1.3rem;
   color: #1a73e8; /* Bright blue for video title */

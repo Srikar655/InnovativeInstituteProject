@@ -26,7 +26,7 @@ export class AddVideoDialogComponent implements OnInit{
   courseId:number=0;
   fb=inject(FormBuilder);
   myReactiveForm!:FormGroup;
-  video!:Vedio;
+  video!:Vedio | null;
   isPopupOpen=false;
   videoUrl:string='';
   service=inject(CoursecrudService);
@@ -34,11 +34,13 @@ export class AddVideoDialogComponent implements OnInit{
   ngOnInit()
   {
     this.courseId=this.dialogdata.courseId;
+    this.video=this.dialogdata.video || null
     this.myReactiveForm=this.fb.group({
-      vediotitle:[ '',[Validators.required,Validators.minLength(6),Validators.maxLength(100)]],
-      videourl:[ '',[Validators.required]],
-      vediodescription:[ '',[Validators.required,Validators.minLength(6),Validators.maxLength(500)]],
-      vedioprice:[ '',[Validators.required]],
+      id:[this.video?.id || null],
+      vediotitle:[ this.video?.vediotitle || '',[Validators.required,Validators.minLength(6),Validators.maxLength(100)]],
+      videourl:[this.video?.videourl ||  '',[Validators.required]],
+      vediodescription:[this.video?.vediodescription || '',[Validators.required,Validators.minLength(6),Validators.maxLength(500)]],
+      vedioprice:[this.video?.vedioprice || '',[Validators.required]],
       course:[{id:this.courseId}]
     });
   }
@@ -72,7 +74,6 @@ export class AddVideoDialogComponent implements OnInit{
           tap(
             (res:any)=>
             {
-              console.log(res);
               Swal.fire({
                           icon: 'success',
                           title: 'Video Record Saved Successfully!',

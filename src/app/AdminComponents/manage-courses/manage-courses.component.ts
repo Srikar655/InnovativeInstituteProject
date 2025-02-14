@@ -8,6 +8,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { SafeUrlPipePipe } from '../../pipes/safe-url-pipe.pipe';
 import { TasksComponent } from '../tasks/tasks.component';
 import { Course } from '../../models/course';
+import { MatDialog } from '@angular/material/dialog';
+import { AddVideoDialogComponent } from '../add-video-dialog/add-video-dialog.component';
 
 @Component({
   selector: 'app-manage-courses',
@@ -19,6 +21,7 @@ export class ManageCoursesComponent implements OnInit {
   route = inject(ActivatedRoute);
   service = inject(CoursemanageService);
   courseId!: number;
+  dialogRef=inject(MatDialog);
   course = signal<Course>({
     id: 0,
     coursename: '',
@@ -30,5 +33,23 @@ export class ManageCoursesComponent implements OnInit {
   ngOnInit(): void {
     this.courseId = Number(this.route.snapshot.paramMap.get('id'));
     this.course = this.service.getCourse(this.courseId);
+  }
+  edit(event:Event,video:Vedio | undefined)
+  {
+    const dialogReference = this.dialogRef.open(AddVideoDialogComponent, {
+          width: '50vw',  
+          height: '80vh', 
+          maxWidth: '100vw',
+          maxHeight: '100vh',
+          panelClass: 'custom-dialog-container',
+          data: { video:video,courseId:this.courseId},
+        });
+    
+        dialogReference.afterClosed().subscribe(result => {
+          /*if (result) {
+            console.log('New video added:', result);
+            this.videos().push(result);
+          }*/
+        });
   }
 }
