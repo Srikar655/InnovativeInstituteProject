@@ -4,20 +4,42 @@
   <div class="course-list">
     <!-- Course Details Section -->
     <div class="course-item">
-      <h1 class="course-id-title">{{ course().id }}</h1>
-      <h2 class="course-title">{{ course().coursename }}</h2>
-      <p class="course-price">Price: {{ course().courseprice | currency:'INR':'symbol' }}</p>
-      <img [src]="'data:image/png;base64,' + course().coursethumbnail" class="course-thumbnail" #courseItem />
+      <h1 class="course-id-title">{{ course()?.id }}</h1>
+      <h2 class="course-title">{{ course()?.coursename }}</h2>
+      <p class="course-price">Price: {{ course()?.courseprice | currency:'INR':'symbol' }}</p>
+      <img [src]="'data:image/png;base64,' + course()?.coursethumbnail" class="course-thumbnail" #courseItem />
+
+      <div class="course-description-container">
+        <p class="course-description" id="course-description">
+          {{ course()?.courseDescription }}
+        </p>
+        <span class="read-more-btn" id="read-more-btn" onclick="toggleDescription()">Read More</span>
+      </div>
+      
+      <ul class="course-features">
+        <li *ngFor="let feature of course()?.courseFeatures">{{ feature }}</li>
+      </ul>
+
+      <div class="course-trailer">
+        <iframe
+          [src]="course()?.courseTrailer ? (course()!.courseTrailer | safeUrlPipe) : ''"
+          class="video-iframe"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+        
+      </div>
+      <button (click)="editCourse(course()!.id, $event)" class="edit-button">✎</button>
     </div>
 
     <!-- Video Details Section -->
     <div *ngIf="video() && video()?.videourl" class="video-details">
       <div class="video-content">
         <div class="video-header">
-          <h1 class="course-id-title">{{video()?.id}}</h1>
+          <h1 class="course-id-title">{{ video()?.id }}</h1>
           <div class="video-actions">
-            <button class="edit-btn" (click)="editVideo($event,video())">Edit</button>
-            <button class="delete-btn" (click)="deleteVideo($event,video())" >Delete</button>
+            <button class="edit-btn" (click)="editVideo($event, video())">Edit</button>
+            <button class="delete-btn" (click)="deleteVideo($event, video())">Delete</button>
           </div>
         </div>
         <h2 class="video-title">{{ video()?.vediotitle }}</h2>
@@ -33,9 +55,8 @@
         ></iframe>
       </div>
     </div>
-    @if(video()&&video()?.videourl)
-    {
-      <app-tasks [videoId]="video()?.id"></app-tasks>
-    }
+
+    <!-- Tasks Section -->
+    <app-tasks [videoId]="video()?.id"></app-tasks>
   </div>
 </div>

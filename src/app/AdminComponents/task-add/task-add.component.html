@@ -1,0 +1,73 @@
+<div class="task-add-dialog">
+    <h2>{{ task ? 'Edit Task' : 'Add New Task' }}</h2>
+  
+    <form [formGroup]="myReactiveForm" (ngSubmit)="save($event)">
+      <!-- Left side of the form -->
+      <div class="form-content">
+        <!-- Task ID (hidden) -->
+        <input formControlName="id" type="hidden" />
+  
+        <!-- Task Title -->
+        <div class="form-group">
+          <label for="task">Task Name</label>
+          <input id="task" type="text" formControlName="task" placeholder="Enter task name" />
+          <div *ngIf="myReactiveForm.get('task')?.invalid && myReactiveForm.get('task')?.touched" class="error">
+            Task name is required and must be between 6 and 100 characters.
+          </div>
+        </div>
+  
+        <!-- Task URL -->
+        <div class="form-group">
+          <label for="taskurl">Task URL</label>
+          <input id="taskurl" type="url" formControlName="taskurl" placeholder="Enter task URL" />
+          <div *ngIf="myReactiveForm.get('taskurl')?.invalid && myReactiveForm.get('taskurl')?.touched" class="error">
+            A valid URL is required.
+          </div>
+        </div>
+  
+        <!-- Task Price -->
+        <div class="form-group">
+          <label for="taskprice">Task Price</label>
+          <input id="taskprice" type="number" formControlName="taskprice" placeholder="Enter task price" />
+          <div *ngIf="myReactiveForm.get('taskprice')?.invalid && myReactiveForm.get('taskprice')?.touched" class="error">
+            Price is required and must be between 6 and 500.
+          </div>
+        </div>
+  
+        <!-- Video ID (Hidden) -->
+
+  
+        <!-- Task Images Upload -->
+        <div class="form-group">
+          <label for="taskimages">Upload Task Images</label>
+          <input id="taskimages" type="file" multiple (change)="fileChanged($event)" />
+          <div class="uploaded-images">
+            <span *ngFor="let image of myReactiveForm.get('taskimages')?.value">
+              Image uploaded successfully
+            </span>
+          </div>
+        </div>
+  
+        <!-- Form Buttons -->
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-submit" [disabled]="myReactiveForm.invalid">
+            Save Task
+          </button>
+          <button type="button" class="btn btn-cancel" (click)="onCancel($event)">Cancel</button>
+        </div>
+      </div>
+  
+      <!-- Right side: Image List for Editing -->
+      <div class="image-list" *ngIf="taskImages.controls.length > 0">0">
+        <h3>Uploaded Images</h3>
+        <div class="image-scroll">
+          <div class="image-card" *ngFor="let imagecontrol of taskImages.controls;let i = index">
+           
+              <img [src]="imagecontrol.value.displayImage" alt="Task Image" />
+            <button type="button" (click)="onDeleteImage($event,i)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  

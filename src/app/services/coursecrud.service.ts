@@ -14,15 +14,15 @@ export class CoursecrudService {
    poppupservice=inject(PopupserviceService);
   addVideo(video: any) {
     const v=this.videos().find(v=>v.id==video.id);
+    const headers = { 'X-Show-Spinner': 'true' };
     if(v)
     {
-        return this.httpClient.post(this.url+'/updateVideo',video).pipe(
+        return this.httpClient.post(this.url+'/updateVideo',video,{headers}).pipe(
           tap((result:any)=>{
             if (result) {
               const video = this.videos().find(v => v.id == result.id);
               if (video) {
                 Object.assign(video, result);
-                this.poppupservice.sweetSuccessAllert("Video Updated")
               }
             }
           }
@@ -31,7 +31,7 @@ export class CoursecrudService {
     }
     else
     {
-       return this.httpClient.post(this.url+'/addVideo',video).pipe(
+       return this.httpClient.post(this.url+'/addVideo',video,{headers}).pipe(
           tap((result:any)=>{
             if (result) {
                 this.videos().push(result);
@@ -51,8 +51,7 @@ export class CoursecrudService {
       .set('courseId', courseId.toString())
       .set('size', fetchSize.toString())
       .set('page', page.toString());
-  
-     this.httpClient.post(this.url + '/getVideos', null, {
+     return this.httpClient.post(this.url + '/getVideos', null, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -65,12 +64,11 @@ export class CoursecrudService {
             this.videos.set(res);
           }
       })
-    ).subscribe({
-      error: (error) => console.log(error)
-    });
+    )
   }
   deletevideo(id: number | undefined) {
-    return this.httpClient.get(this.url+'/deleteVideo?videoId='+id).pipe(
+    const headers = { 'X-Show-Spinner': 'true' };
+    return this.httpClient.get(this.url+'/deleteVideo?videoId='+id,{headers}).pipe(
       tap(
         (res:any)=>{
           const index = this.videos().findIndex(v => v.id === id);

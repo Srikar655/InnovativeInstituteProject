@@ -1,13 +1,22 @@
 <div class="course-list">
-    <div class="course-item" *ngFor="let course of courseSignal(); let i = index" >
-      <a [routerLink]="['/managecourses', course.id]" class="course-link">
-        <div class="course-thumbnail">
-          <img [src]="getImageSrc(course) || 'https://i.pinimg.com/originals/19/a0/14/19a01420f98ad566da0b12aa2816faef.jpg'" alt="Loading" class="course-image" id="course-{{ course.id }}"  #courseItem/>
-        </div>
-        <div class="course-info">
-          <h3>{{ course.coursename }}</h3>
-        </div>
-      </a>
+  <div class="course-item" *ngFor="let course of courseSignal(); let i = index">
+    <a [routerLink]="['/managecourses', course.id]" class="course-link">
+      <div class="course-thumbnail">
+        <img [src]="course?.coursethumbnail ? 'data:image/png;base64,' + course.coursethumbnail : 'https://as2.ftcdn.net/v2/jpg/01/02/45/61/1000_F_102456100_OOTt9tI6c4RQUf2BVpAR4rUPF5qmS3Ah.jpg'" 
+             alt="Loading" 
+             class="course-image" 
+             id="course-{{ course.id }}" 
+             #courseItem />
+      </div>
+
+      <div class="course-info">
+        <h3>{{ course.coursename }}</h3>
+        <p class="course-price">  {{ course.courseprice | currency:'INR':'symbol' }}</p>
+      </div>
+    </a>
+    <!-- Add Edit and Delete Buttons Here -->
+    <div class="course-actions">
+      <button (click)="deleteCourse(course.id, $event)" class="delete-button">✖</button>
     </div>
   </div>
-  
+</div>

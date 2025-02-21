@@ -23,6 +23,7 @@ export class AddCourseComponent implements OnInit {
   embedUrl: string | null = null;
   courseService=inject(CoursemanageService);
   popupservice=inject(PopupserviceService)
+  worker!:Worker;
   openModal($event:Event,url:any): void {
     if($event.isTrusted)
     {
@@ -56,8 +57,24 @@ export class AddCourseComponent implements OnInit {
       coursethumbnail:[],
       coursename: ['', [Validators.required]],
       courseprice: ['', [Validators.required]],
+      courseTrailer:['',[Validators.required]],
+      courseDescription:['',[Validators.required]],
+      courseFeatures:this.fb.array([]),
       vedios: this.fb.array([])
     });
+  }
+  addFeatures()
+  {
+    this.courseFeatures.push(this.fb.control('',[Validators.required]));
+  }
+  get courseFeatures():FormArray
+  {
+    return this.myReactiveForm.get('courseFeatures') as FormArray;
+  }
+  deleteFeatures(index:number)
+  {
+    const features=this.myReactiveForm.get('courseFeatures') as FormArray;
+    features.removeAt(index);
   }
   get vedios(): FormArray {
     return this.myReactiveForm.get('vedios') as FormArray;
@@ -108,18 +125,14 @@ export class AddCourseComponent implements OnInit {
     }
   }
   readFile(file: File, vedioIndex: number, taskIndex: number): void {
-    const reader = new FileReader();
-  
-    reader.onload = async () => {
-      const bytes =  new Uint8Array(reader.result as ArrayBuffer) ;
-      const task = this.getTasks(vedioIndex).at(taskIndex);
-      const taskimagesControl = task.get('taskimages') as FormArray;
-      //const currentImages= taskimagesControl?.value || [];
-      //currentImages.push({taskImage:Array.from(bytes)}); 
-      taskimagesControl?.push(this.fb.control({taskImage:Array.from(bytes)}));
-    };
-  
-    reader.readAsArrayBuffer(file);  
+    this.worker=new Worker(new URL('../../webworkers/readfiletobytes.worker',import.meta.url))
+    this.worker.postMessage({file:file});
+    this.worker.onmessage=({data})=>
+      {
+        const task = this.getTasks(vedioIndex).at(taskIndex);
+        const taskimagesControl = task.get('taskimages') as FormArray;
+        taskimagesControl?.push(this.fb.control({taskImage:Array.from(data)}));
+      }
   }
   thumbnailchange($event:any)
   {
@@ -137,14 +150,13 @@ export class AddCourseComponent implements OnInit {
   }
   readThumbnail(file:File)
   {
-      const reader=new FileReader();
-      reader.onload = async () => {
-        const bytes =  new Uint8Array(reader.result as ArrayBuffer) ;
+    this.worker=new Worker(new URL('../../webworkers/readfiletobytes.worker',import.meta.url))
+    this.worker.postMessage({file:file});
+    this.worker.onmessage=({data})=>
+      {
         const thumbnail = this.getCourseThumbnail();
-        thumbnail?.setValue(Array.from(bytes));
-      };
-
-      reader.readAsArrayBuffer(file);
+        thumbnail?.setValue(Array.from(data));
+      }
   }
  
   save($event: Event): void {

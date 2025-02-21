@@ -12,6 +12,8 @@ import { PopupserviceService } from '../../services/popupservice.service';
   styleUrl: './courses.component.css'
 })
 export class CoursesComponent implements OnInit, AfterViewInit {
+
+
   service = inject(CoursemanageService);
   courseSignal = this.service.courseSignal;
   private observer!: IntersectionObserver;
@@ -61,17 +63,26 @@ export class CoursesComponent implements OnInit, AfterViewInit {
   }
 
   loadThumbnail(courseId: number) {
-    this.service.getCourseThumbnail(courseId).subscribe(thumbnail => {
-      const course=this.courseSignal().find(c=>c.id==courseId);
-      if (course) {
-        course.coursethumbnail = thumbnail;
-      }
-    });
+    this.service.getCourseThumbnail(courseId).subscribe();
   }
 
-  getImageSrc(course: Course) {
-    return course.coursethumbnail
-      ? URL.createObjectURL(new Blob([course.coursethumbnail], { type: 'image/png' }))
-      : null; 
+  deleteCourse(id: number,$event: MouseEvent) {
+    if($event.isTrusted)
+    {
+      this.service.deleteCourse(id).subscribe(
+        {
+          next: (res: any) => {
+            this.popupservice.sweetSuccessAllert("Course Deleted Successfully");
+          },
+          error: (error: any) => {
+            console.log(error);
+            this.popupservice.sweetUnSuccessAllert("There Is An Issue With Deleting Course Please Try Again")
+          }
+        }
+      );
+    }
   }
+    
+
+  
 }

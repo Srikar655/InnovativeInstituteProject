@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #1e90ff;
+  background-color: #020202;
   padding: 15px 30px;
   color: white;
 }
@@ -12,6 +12,7 @@
   margin: 0;
   font-size: 24px;
   cursor: pointer;
+  font-family: 'Arial', sans-serif;
 }
 
 .nav-links {
@@ -22,6 +23,7 @@
 .nav-links li {
   margin-left: 30px;
 }
+
 
 .nav-links a {
   text-decoration: none;

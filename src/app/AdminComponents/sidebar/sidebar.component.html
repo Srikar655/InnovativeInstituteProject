@@ -4,19 +4,15 @@
     <mat-icon>add</mat-icon>
   </button>
 
-  <div class="infinite-scroll-container" 
-      infiniteScroll 
-      [infiniteScrollDistance]="1.5"  
-      [infiniteScrollThrottle]="500"  
-      (scrolled)="onScroll()"
-      [scrollWindow]="false">
-      
+  <div class="infinite-scroll-container">
     <div class="sidebar-header">
       <h2>Video Sidebar</h2>
     </div>
 
     <div class="sidebar">
-      <div class="sidebar-item" *ngFor="let video of videos();let i= index" (click)="onVideoSelect(i)">
+      <div class="sidebar-item" *ngFor="let video of videos(); let i = index"
+           (click)="onVideoSelect(i)"
+           #scrollContainer>
         <iframe
           [src]="video.videourl | safeUrlPipe"
           class="sidebar-thumbnail"
@@ -27,9 +23,9 @@
       </div>
     </div>
 
+    <!-- Optional loading indicator for infinite scrolling -->
     <div *ngIf="loadingVideos" class="loading-message">
       <p>Loading more videos...</p>
     </div>
-    
   </div>
 </div>

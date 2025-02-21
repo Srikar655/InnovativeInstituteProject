@@ -1,39 +1,38 @@
 <!-- Tasks Section -->
-<div class="tasks-container">
+<div class="tasks-header">
     <h3>Tasks</h3>
+    <!-- Container to align Add Task and Show More buttons on the same line -->
+    <div class="buttons-container">
+      <button class="add-task-btn" (click)="addTask()">
+        <i class="fas fa-plus"></i> Add Task
+      </button>
+      <button *ngIf="tasks().length > 3" class="show-more-btn" (click)="openModal()">Show More</button>
+    </div>
+  </div>
+  
+  <div class="tasks-container">
     <h3 hidden>{{ fetchTasks() }}</h3>
     <div class="task-list">
-        <div class="task-item" *ngFor="let task of tasks().slice(0, 3)" (click)="openTaskDetails(task)">
-            <h2>{{task.id}}</h2>
-            <h3>{{ task.task }}</h3>
-            <h4>{{task.taskprice | currency:'INR':'symbol'}}</h4>
-        </div>
+      <!-- Each task is a scrollable item -->
+      <div class="task-item" *ngFor="let task of tasks().slice(0, 3)" (click)="openTaskDetails(task)" #scrollableItem>
+        <h2>{{ task.id }}</h2>
+        <h3>{{ task.task }}</h3>
+        <h4>{{ task.taskprice | currency: 'INR' : 'symbol' }}</h4>
+      </div>
     </div>
-    <button *ngIf="tasks().length > 3" class="show-more-btn" (click)="openModal()">Show More</button>
-</div>
-
-<!-- Modal for Infinite Scrolling -->
-<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
-    <div class="modal-content" #scrollableDiv (click)="$event.stopPropagation()"
-        infiniteScroll 
-        [infiniteScrollDistance]="2"  
-        [infiniteScrollThrottle]="200"  
-        (scrolled)="onScroll()"
-        [scrollWindow]="false"
-        [infiniteScrollContainer]="scrollableDiv">
-        
-        <h3>All Tasks</h3>
-        <div class="task-list">
-            <div class="task-item" *ngFor="let task of tasks()" (click)="openTaskDetails(task)">
-                <h2>{{task.id}}</h2>
-                <h3>{{ task.task }}</h3>
-                <h4>{{task.taskprice | currency:'INR':'symbol' }}</h4>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Task Details Modal -->
-
+  </div>
   
-
+  <!-- Modal for Infinite Scrolling -->
+  <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>All Tasks</h3>
+      <div class="task-list">
+        <div class="task-item" *ngFor="let task of tasks()" (click)="openTaskDetails(task)" #scrollableItem>
+          <h2>{{ task.id }}</h2>
+          <h3>{{ task.task }}</h3>
+          <h4>{{ task.taskprice | currency: 'INR' : 'symbol' }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  

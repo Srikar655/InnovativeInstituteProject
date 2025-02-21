@@ -1,3 +1,18 @@
+/* Container for Tasks Section header (Tasks title and buttons) */
+.tasks-header {
+  display: flex;
+  justify-content: space-between; /* Title on the left, buttons on the right */
+  align-items: center; /* Vertically align the title and buttons */
+  margin-bottom: 15px;
+}
+
+/* Styling for Task Section title */
+.tasks-header h3 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 0;
+}
+
 /* Modal Overlay - keeps the modal background fixed */
 .modal-overlay {
   position: fixed;
@@ -16,11 +31,11 @@
 /* Modal Content - style for the actual modal box */
 .modal-content {
   background: #ffffff;
-  padding: 15px; /* Reduced padding for more compact look */
+  padding: 15px;
   border-radius: 12px;
   width: 90%;
   max-width: 1140px;
-  height: 400px; /* Reduced height of modal */
+  height: 400px;
   overflow-y: auto; /* Allow vertical scrolling if needed */
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -30,7 +45,7 @@
 /* Task Container Styling */
 .tasks-container {
   position: relative;
-  padding: 10px; /* Reduced padding */
+  padding: 10px;
   background: #f8f9fa;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -48,7 +63,7 @@
 /* Task item */
 .task-item {
   background: #ffffff;
-  padding: 10px; /* Reduced padding */
+  padding: 10px;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -100,29 +115,6 @@
 
 .close-btn:hover {
   color: red;
-}
-
-/* Show More button functionality */
-.show-more-btn {
-  position: absolute;
-  top: 10px; /* Positioning the button inside container */
-  right: 10px;
-  padding: 8px 15px;
-  background: #3498db;
-  color: white;
-  border: 1px solid #2980b9;
-  border-radius: 5px;
-  cursor: pointer; /* Add cursor pointer to make it clickable */
-  transition: 0.3s;
-  font-weight: bold;
-  z-index: 10;
-}
-
-.show-more-btn:hover {
-  background: #2980b9;
-  color: white;
-  border-color: #3498db;
-  cursor: pointer; /* Ensure pointer cursor shows on hover */
 }
 
 /* Task Details Modal Overlay */
@@ -203,4 +195,51 @@
 
 .task-details-close-btn:hover {
   color: red;
+}
+
+/* Container for Add Task and Show More buttons */
+.buttons-container {
+  display: flex; /* Align buttons side by side */
+  justify-content: flex-start; /* Align buttons to the left */
+  align-items: center;
+  gap: 10px; /* Space between buttons */
+  margin-top: 15px; /* Add some space above the buttons */
+}
+
+/* Add Task button */
+.add-task-btn {
+  padding: 8px 15px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+/* Button icon styling */
+.add-task-btn i {
+  margin-right: 8px; /* Space between the icon and text */
+}
+
+/* Show More button */
+.show-more-btn {
+  padding: 8px 15px;
+  background: #3498db;
+  color: white;
+  border: 1px solid #2980b9;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+/* Hover effect for Show More button */
+.show-more-btn:hover {
+  background: #2980b9;
+  color: white;
+  border-color: #3498db;
 }

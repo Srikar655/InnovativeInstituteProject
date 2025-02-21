@@ -6,6 +6,7 @@
   color: #1976d2;
   margin-bottom: 10px;
   font-weight: bold;
+  position: relative; /* Added for positioning action buttons */
 }
 
 /* Mat-dialog-container starts small and expands dynamically */
@@ -25,6 +26,38 @@
 .pdf-shown .mat-dialog-container {
   width: 80vw; /* Expand width */
   max-height: 90vh; /* Expand height */
+}
+
+/* Task header (title and action buttons) */
+.task-header {
+  display: flex;
+  justify-content: center; /* Keep the title centered */
+  align-items: center;
+  position: relative; /* Allows placing the buttons on the right */
+}
+
+/* Action buttons for Edit and Delete */
+.action-buttons {
+  position: absolute;
+  right: 10px; /* Place buttons on the right */
+  top: 0;
+  display: flex;
+  gap: 10px;
+}
+
+.action-buttons button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.action-buttons mat-icon {
+  font-size: 24px;
+  color: #1976d2; /* Primary color for Edit */
+}
+
+.action-buttons button[color="warn"] mat-icon {
+  color: #d32f2f; /* Warning color for Delete */
 }
 
 /* Task container for PDF & Video */

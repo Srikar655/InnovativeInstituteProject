@@ -14,6 +14,7 @@ export class OauthService {
       client_id:'950816388236-beh5nkicurvu1o30tcikbds4p7d481s4.apps.googleusercontent.com',
       callback:(res:any)=>
       {
+        console.log(res),
         localStorage.setItem('oauthToken',res.credential),
         this.navigate();
       }

@@ -1,0 +1,66 @@
+<div class="container">
+  <h2>Edit Course</h2>
+  <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="coursename">Course Name</label>
+      <input formControlName="coursename" id="coursename" type="text" placeholder="Enter course name" />
+      <div *ngIf="courseForm.get('coursename')?.invalid && courseForm.get('coursename')?.touched">
+        Course name is required.
+      </div>
+    </div>
+
+    <!-- Course Price -->
+    <div>
+      <label for="courseprice">Course Price</label>
+      <input formControlName="courseprice" id="courseprice" type="number" placeholder="Enter course price" />
+      <div *ngIf="courseForm.get('courseprice')?.invalid && courseForm.get('courseprice')?.touched">
+        Please enter a valid price.
+      </div>
+    </div>
+
+    <!-- Course Thumbnail -->
+    <div>
+      <label for="coursethumbnail">Course Thumbnail (Optional)</label>
+      <img *ngIf="thumbnailPreview" [src]="thumbnailPreview" alt="Course Thumbnail" />
+      <input id="coursethumbnail" type="file" accept="image/*" (change)="onThumbnailSelected($event)" />
+    </div>
+
+    <!-- Course Description -->
+    <div>
+      <label for="courseDescription">Course Description</label>
+      <textarea formControlName="courseDescription" id="courseDescription" rows="4" placeholder="Enter course description"></textarea>
+      <div *ngIf="courseForm.get('courseDescription')?.invalid && courseForm.get('courseDescription')?.touched">
+        Course description is required.
+      </div>
+    </div>
+
+    <!-- Course Features -->
+    <div>
+      <label for="courseFeatures">Course Features (Comma-separated)</label>
+      <textarea formControlName="courseFeatures" id="courseFeatures" rows="3" placeholder="Enter course features, separated by commas"></textarea>
+      <div *ngIf="courseForm.get('courseFeatures')?.invalid && courseForm.get('courseFeatures')?.touched">
+        Course features are required.
+      </div>
+    </div>
+
+    <div>
+      <label for="courseTrailer">Course Trailer (URL)</label>
+      <input formControlName="courseTrailer" id="courseTrailer" type="url" placeholder="Enter course trailer URL" />
+      <div *ngIf="courseForm.get('courseTrailer')?.invalid && courseForm.get('courseTrailer')?.touched">
+        Please enter a valid URL.
+      </div>
+    </div>
+
+    <div class="video-iframe-container">
+      <iframe
+        [src]="courseForm.get('courseTrailer')?.value | safeUrlPipe"
+        class="video-iframe"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="courseForm.invalid">Save Course</button>
+  </form>
+</div>

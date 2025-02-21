@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, inject, Input, model, Output, signal } from '@angular/core';
+import { Component, computed, ElementRef, EventEmitter, inject, Input, model, Output, QueryList, signal, ViewChildren } from '@angular/core';
 import { SafeUrlPipePipe } from '../../pipes/safe-url-pipe.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,11 +11,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { CoursecrudService } from '../../services/coursecrud.service';
 @Component({
   selector: 'app-sidebar',
-  imports: [SafeUrlPipePipe,CommonModule,FormsModule,InfiniteScrollDirective,MatIconModule],
+  imports: [SafeUrlPipePipe,CommonModule,FormsModule,MatIconModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent {
+export class SidebarComponent
+{
   courseId=model<number>();
   service=inject(CoursecrudService);
   videos=this.service.videos;
@@ -23,22 +24,61 @@ export class SidebarComponent {
   fetchSize = 3;
   dynamicFetchSize = 3;
   sidebarActive = signal<boolean>(false);
+  observer!:IntersectionObserver;
+  @ViewChildren('scrollContainer') scrollContainers!: QueryList<ElementRef>;
   dialogRef=inject(MatDialog);
   loadVideos=computed(()=>
     {
         const id=this.courseId()    
         this.service.getVideos(id as number, this.page, this.fetchSize, false)
     })
-  videoselected=model<Vedio>();
+  videoselected=model<Vedio | undefined>(undefined);
   loadingVideos:boolean=false;
+  noMoreVideos:boolean=false;
   onVideoSelect(index:any)
   {
-    console.log(index);
     this.videoselected.set(this.videos()[index]);
   } 
+  ngOnInit() {
+    this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, false).subscribe({
+      next:res=>{
+        this.page += 1;
+        if(res.length<this.dynamicFetchSize)
+        {
+          this.noMoreVideos=true;
+        }
+      },
+      error:err=>{
+        console.log(err);
+      }
+    });
+  }
+  ngAfterViewInit() {
+    this.observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        this.onScroll();
+      }
+    }, {
+      threshold: 0.25,rootMargin:'50px',root:null
+    });
+    this.observeLastItem();
+    this.scrollContainers.changes.subscribe(() => {
+      this.observeLastItem();
+    });
+  }
+
+  observeLastItem() {
+    if (this.scrollContainers && this.scrollContainers.last) {
+      const lastElement = this.scrollContainers.last.nativeElement;
+      if (this.observer) {
+        this.observer.observe(lastElement);
+      }
+    }
+  }
+
   onScroll()
   {
-    if(this.loadingVideos)
+    if(this.loadingVideos || this.noMoreVideos)
     {
       return;
     }
@@ -46,13 +86,19 @@ export class SidebarComponent {
     this.fethVideos()
     this.loadingVideos=false;
   }
-  fethVideos() {
-      this.page += 1; 
-      this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, true);
-  }
-  ngOnInit()
-  {
-    this.service.getVideos(this.courseId() as number, this.page, this.fetchSize, false)
+  fethVideos() { 
+      this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, true).subscribe({
+        next:res=>{
+          this.page += 1;
+          if(res.length<this.dynamicFetchSize)
+          {
+            this.noMoreVideos=true;
+          }
+        },
+        error:err=>{
+          console.log(err);
+        }
+      });
   }
   openAddVideoDialog(): void {
     const dialogReference = this.dialogRef.open(AddVideoDialogComponent, {

@@ -1,104 +1,121 @@
-/* Main container holding the list of courses */
 .course-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    padding: 40px;
-    background: linear-gradient(135deg, #f6f9fc 0%, #eef2f3 100%);
-    border-radius: 20px;
-}
-
-/* Individual course item */
-.course-item {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Adjust number of columns */
+    gap: 20px; /* Space between courses */
+    justify-items: center; /* Center items in the grid */
+    padding: 20px;
+  }
+  
+  .course-item {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background: linear-gradient(145deg, #ffffff, #f3f3f3);
-    border-radius: 20px;
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 30%; /* Ensures 3 items per row */
-    max-width: 300px; /* Set a consistent max-width */
-    box-sizing: border-box; /* Include padding and border in width */
-    text-decoration: none;
-    margin-bottom: 20px; /* Spacing between rows */
-}
-
-/* Hover effect for course item */
-.course-item:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.05);
-}
-
-/* Thumbnail image container */
-.course-thumbnail {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
     width: 100%;
-    height: 180px; /* Adjusted to ensure proper image fit */
-    position: relative;
-    border-bottom: 2px solid #ddd;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    overflow: hidden; /* Hide any overflowing image parts */
+    max-width: 440px; /* Adjust to match the image size */
+    text-align: center;
+    overflow: hidden;
+    height: auto;
+  }
+  
+  .course-item:hover {
+    transform: translateY(-5px);
+  }
+  
+  .course-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .course-thumbnail {
+    height: 200px; /* Adjust as needed */
+    background-color: #f1f1f1;
+    overflow: hidden;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .course-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .course-info {
+    padding: 15px;
+  }
+  
+  .course-info h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .course-info p.course-price {
+    color: #ff784b;
+    font-size: 1em;
+    font-weight: 600;
+  }
+  .course-actions {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    gap: 10px; /* Space between the buttons */
+  }
+  
+  .course-item {
+    position: relative; /* So the absolute buttons can be positioned */
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    width: 100%;
+    max-width: 440px;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  .course-item:hover .course-actions {
+    display: flex;
+  }
+  
+  .edit-button,
+  .delete-button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-/* Image styling */
-.course-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures the image fills the container without distortion */
-    transition: transform 0.5s ease;
-}
-
-/* Image hover effect */
-.course-item:hover .course-thumbnail img {
-    transform: scale(1.1); /* Zoom-in effect on hover */
-}
-
-/* Course info section */
-.course-info {
-    padding: 15px;
-    text-align: center;
-    background: #fff;
-    width: 100%;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-}
-
-/* Course name styling */
-.course-info h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-    text-decoration: none; /* Remove underline */
-    transition: color 0.3s ease;
-}
-
-/* Hover effect for course name */
-.course-item:hover .course-info h3 {
-    color: #007BFF; /* Change color on hover */
-}
-
-/* Remove the blue underline on course name */
-.course-item a {
-    text-decoration: none; /* Ensure anchor tag has no underline */
-}
-
-/* Responsive styling for smaller screens */
-@media (max-width: 768px) {
-    .course-list {
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-    }
-
-    .course-item {
-        width: 90%; /* Full width for smaller screens */
-        margin-bottom: 20px; /* Ensure spacing between items */
-    }
-}
+    transition: background 0.2s ease;
+  }
+  
+  .edit-button {
+    background-color: #4caf50; /* Green for Edit */
+  }
+  
+  .delete-button {
+    background-color: #f44336; /* Red for Delete */
+  }
+  
+  .edit-button:hover {
+    background-color: #45a049;
+  }
+  
+  .delete-button:hover {
+    background-color: #e53935;
+  }
+  
