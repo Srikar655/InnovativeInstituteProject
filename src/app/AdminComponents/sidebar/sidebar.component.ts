@@ -8,7 +8,7 @@ import { CoursemanageService } from '../../services/coursemanage.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddVideoDialogComponent } from '../add-video-dialog/add-video-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
-import { CoursecrudService } from '../../services/coursecrud.service';
+import { CoursecrudService } from '../../services/videomanagement.service';
 @Component({
   selector: 'app-sidebar',
   imports: [SafeUrlPipePipe,CommonModule,FormsModule,MatIconModule],

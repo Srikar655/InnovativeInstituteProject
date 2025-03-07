@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 declare var google:any;
@@ -6,15 +7,16 @@ declare var google:any;
 })
 export class OauthService {
 
+  url:string="http://localhost:9090/api";
+  http=inject(HttpClient);
   constructor() { }
   router=inject(Router);
   Login()
   {
     google.accounts.id.initialize({
-      client_id:'950816388236-beh5nkicurvu1o30tcikbds4p7d481s4.apps.googleusercontent.com',
+      client_id:'141367274358-radhhb6jmms5eu9j743u5i2bfchkdt2f.apps.googleusercontent.com',
       callback:(res:any)=>
       {
-        console.log(res),
         localStorage.setItem('oauthToken',res.credential),
         this.navigate();
       }
@@ -26,7 +28,11 @@ export class OauthService {
   }
   navigate():void
   {
-    this.router.navigate(['/courses'])
+    const headers = { 'X-Show-Spinner': 'true' };
+    this.http.get(this.url+"/login",{headers}).subscribe({
+      next:res=>{localStorage.setItem('userIdentity',JSON.stringify(res))},
+      error:err=>console.log(err)
+    });
   }
 
 }

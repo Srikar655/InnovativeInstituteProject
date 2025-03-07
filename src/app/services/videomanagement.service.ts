@@ -3,12 +3,14 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Vedio } from '../models/vedio';
 import { catchError, of, tap } from 'rxjs';
 import { PopupserviceService } from './popupservice.service';
+import { TaskscrudService } from './taskscrud.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoursecrudService {
-  url:string="http://localhost:9090/api";
+  url:string="http://localhost:9090/api/videos";
+  taskservice=inject(TaskscrudService);
   videos=signal<Vedio[]>([]);
    constructor(private httpClient:HttpClient) { }
    poppupservice=inject(PopupserviceService);
@@ -17,7 +19,7 @@ export class CoursecrudService {
     const headers = { 'X-Show-Spinner': 'true' };
     if(v)
     {
-        return this.httpClient.post(this.url+'/updateVideo',video,{headers}).pipe(
+        return this.httpClient.put(this.url+'/update',video,{headers}).pipe(
           tap((result:any)=>{
             if (result) {
               const video = this.videos().find(v => v.id == result.id);
@@ -31,7 +33,7 @@ export class CoursecrudService {
     }
     else
     {
-       return this.httpClient.post(this.url+'/addVideo',video,{headers}).pipe(
+       return this.httpClient.post(this.url+'/add',video,{headers}).pipe(
           tap((result:any)=>{
             if (result) {
                 this.videos().push(result);
@@ -51,7 +53,7 @@ export class CoursecrudService {
       .set('courseId', courseId.toString())
       .set('size', fetchSize.toString())
       .set('page', page.toString());
-     return this.httpClient.post(this.url + '/getVideos', null, {
+     return this.httpClient.get(this.url + '/getAll', {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -68,12 +70,13 @@ export class CoursecrudService {
   }
   deletevideo(id: number | undefined) {
     const headers = { 'X-Show-Spinner': 'true' };
-    return this.httpClient.get(this.url+'/deleteVideo?videoId='+id,{headers}).pipe(
+    return this.httpClient.delete(this.url+'/delete?videoId='+id,{headers}).pipe(
       tap(
         (res:any)=>{
           const index = this.videos().findIndex(v => v.id === id);
           if (index !== -1) {
             this.videos().splice(index, 1);
+            this.taskservice.clearTasks();
           }
         }
       )

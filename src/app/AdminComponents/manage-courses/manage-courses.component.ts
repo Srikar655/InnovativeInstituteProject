@@ -10,7 +10,7 @@ import { TasksComponent } from '../tasks/tasks.component';
 import { Course } from '../../models/course';
 import { MatDialog } from '@angular/material/dialog';
 import { AddVideoDialogComponent } from '../add-video-dialog/add-video-dialog.component';
-import { CoursecrudService } from '../../services/coursecrud.service';
+import { CoursecrudService } from '../../services/videomanagement.service';
 import { PopupserviceService } from '../../services/popupservice.service';
 import { EditCourseComponent } from '../edit-course/edit-course.component';
 
@@ -45,7 +45,6 @@ export class ManageCoursesComponent implements OnInit {
     this.courseId = Number(this.route.snapshot.paramMap.get('id'));
     this.service.getCourse(this.courseId).subscribe({
       next: (res: any) => {
-        const { id, coursename, courseprice, courseDescription, courseFeatures, courseTrailer } = res;
         this.courseData.set(res);
       }
     });
@@ -91,7 +90,6 @@ export class ManageCoursesComponent implements OnInit {
         data:{ course:this.course()},
     });
     dialogReference.afterClosed().subscribe((res: any) => {
-      console.log('Dialog closed response:', res);  
       if (res) {
         this.courseData.set(res);
       } else {

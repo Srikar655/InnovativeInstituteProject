@@ -7,16 +7,20 @@ import { Task } from '../models/task';
   providedIn: 'root'
 })
 export class TaskscrudService {
+  clearTasks() {
+    this.tasks.set([]);
+  }
   constructor() { }
   httpClient=inject(HttpClient);
-  url:string="http://localhost:9090/api";
+  url1:string="http://localhost:9090/api/tasks";
+  url2:string="http://localhost:9090/api/taskImages";
   tasks=signal<Task[]>([]);
   addTask(task:any)
   {
     const headers = { 'X-Show-Spinner': 'true' };
     if(!task.id)
     {
-      return this.httpClient.post(this.url+'/addTask',task,{headers}).pipe(
+      return this.httpClient.post(this.url1+'/add',task,{headers}).pipe(
         tap(
           (res:any)=>
           {
@@ -27,7 +31,7 @@ export class TaskscrudService {
     }
     else
     {
-      return this.httpClient.post(this.url+'/updateTask',task,{headers}).pipe(
+      return this.httpClient.put(this.url1+'/updateTask',task,{headers}).pipe(
         tap(
           (res:any)=>
           {
@@ -45,7 +49,7 @@ export class TaskscrudService {
   editTask(task:any)
   {
     const headers = { 'X-Show-Spinner': 'true' };
-    return this.httpClient.post(this.url+'/editTask',task,{headers}).pipe(
+    return this.httpClient.put(this.url1+'/update',task,{headers}).pipe(
       tap(
         (res:any)=>
         {
@@ -61,7 +65,7 @@ export class TaskscrudService {
   deleteTask(id:number)
   {
     const headers = { 'X-Show-Spinner': 'true' };
-    return this.httpClient.get(this.url+'/deleteTask?taskId='+id,{headers}).pipe(
+    return this.httpClient.delete(this.url1+'/delete?taskId='+id,{headers}).pipe(
       tap(
         (res:any)=>
         {
@@ -80,7 +84,7 @@ export class TaskscrudService {
       .set('size', fetchSize.toString())
       .set('page', page.toString());
   
-     return this.httpClient.post(this.url + '/getTasks', null, {
+     return this.httpClient.get(this.url1 + '/getAll', {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -99,7 +103,7 @@ export class TaskscrudService {
   getTaskImages(id: number) {
     
     const headers = { 'X-Show-Spinner': 'true' };
-    return this.httpClient.get(`${this.url}/findTaskImages?taskId=${id}`,{headers}).pipe(
+    return this.httpClient.get(`${this.url2}/getAll?taskId=${id}`,{headers}).pipe(
       tap(res=>
       {
         const task=this.tasks().find(t=>t.id==id);
@@ -111,7 +115,7 @@ export class TaskscrudService {
     );
   }
   deleteimage(imageId: number,taskId:number) {
-    return this.httpClient.get(this.url+'/deleteTaskImage?imageId='+imageId).pipe(
+    return this.httpClient.delete(this.url2+'/deleteTaskImage?imageId='+imageId).pipe(
       tap(
         (res:any)=>
         {
@@ -126,4 +130,5 @@ export class TaskscrudService {
       )
     )
   }
+  
 }

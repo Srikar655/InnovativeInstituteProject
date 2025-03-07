@@ -31,6 +31,7 @@ export class TasksComponent implements AfterViewInit {
   @ViewChildren('scrollableItem') scrollableDiv!: QueryList<ElementRef>;
 
   fetchTasks = computed(() => {
+    console.log(this.videoId());
     const id = this.videoId() as number;
     if (id !== null) {
       this.service.getTasks(id, this.page, this.fetchSize, false).subscribe({
@@ -47,7 +48,7 @@ export class TasksComponent implements AfterViewInit {
     }
     return this.videoId();
   });
-
+  
   ngAfterViewInit() {
     this.observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {

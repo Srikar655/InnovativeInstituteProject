@@ -24,6 +24,7 @@
     "esbuild": "^0.25.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2",
+    "langchain": "^0.3.19",
     "ngx-infinite-scroll": "^19.0.0",
     "ngx-spinner": "^19.0.0",
     "pdfjs-dist": "^4.10.38",

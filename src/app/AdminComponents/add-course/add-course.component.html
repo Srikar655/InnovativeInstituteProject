@@ -71,6 +71,7 @@
   <div *ngIf="myReactiveForm.get('courseTrailer')?.invalid && myReactiveForm.get('courseTrailer')?.touched">
     <small *ngIf="myReactiveForm.get('courseTrailer')?.errors?.['required']" class="error-message">Course Trailer is required.</small>
   </div>
+  <button type="button" (click)="openModal($event,myReactiveForm.get('courseTrailer')?.value)">View Video</button>
   <input type="text" name="courseDescription" placeholder="CourseDescription" formControlName="courseDescription"/><br/>
   <div *ngIf="myReactiveForm.get('courseDescription')?.invalid && myReactiveForm.get('courseDescription')?.touched">
     <small *ngIf="myReactiveForm.get('courseDescription')?.errors?.['required']" class="error-message">Course Description is required.</small>

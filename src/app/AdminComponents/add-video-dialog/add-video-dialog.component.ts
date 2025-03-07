@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeUrlPipePipe } from '../../pipes/safe-url-pipe.pipe';
-import { CoursecrudService } from '../../services/coursecrud.service';
+import { CoursecrudService } from '../../services/videomanagement.service';
 import { tap } from 'rxjs';
 import Swal from 'sweetalert2';
 import { PopupserviceService } from '../../services/popupservice.service';

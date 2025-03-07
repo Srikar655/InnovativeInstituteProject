@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, inject, OnInit, AfterViewInit, ElementRef } from '@angular/core';
-import jsPDF from 'jspdf';
 import { Task } from '../../models/task';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
@@ -23,7 +22,6 @@ export class TaskPdfComponent implements OnInit, AfterViewInit {
   service = inject(TaskscrudService);
   task: Task = {} as Task;
   pdfUrl: any;
-  pdf!: Blob;
   pdfgenerated = false;
   isPdfShown = false; 
   dialog = inject(MatDialogRef<TaskPdfComponent>);
@@ -63,7 +61,6 @@ export class TaskPdfComponent implements OnInit, AfterViewInit {
           this.worker.onmessage=({data})=>
           {
             this.pdfUrl = URL.createObjectURL(data);
-            this.pdf = data
           }
         }
     });
@@ -84,7 +81,7 @@ export class TaskPdfComponent implements OnInit, AfterViewInit {
       this.generatePDF();
     }
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(this.pdf);
+    link.href = this.pdfUrl;
     link.download = 'task-images.pdf';
     link.click();
   }

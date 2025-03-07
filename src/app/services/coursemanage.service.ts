@@ -5,27 +5,30 @@ import { forkJoin, Observable, switchMap, tap } from 'rxjs';
 import { Vedio } from '../models/vedio';
 import { Task } from '../models/task';
 import { FormGroup } from '@angular/forms';
+import { Category } from '../models/Category';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoursemanageService {
+
   
-  url:string="http://localhost:9090/api";
+  url:string="http://localhost:9090/api/courses";
+  url2:string="http://localhost:9090/api/coursecategories";
 
   constructor(private httpClient:HttpClient) { }
   courseSignal=signal<Course[]>([]);
-  
+  category=signal<Category[]>([]);
   
   getCourse(courseId: number) {
-    const requestUrl = this.url +'/findCourse?courseId='+courseId;
+    const requestUrl = this.url +'/get?courseId='+courseId;
     return this.httpClient.get<any>(requestUrl)
 }
 
 
   save(form: any) {
     const headers = { 'X-Show-Spinner': 'true' };
-   return  this.httpClient.post(this.url+'/addCourse',form,{headers}).pipe(
+   return  this.httpClient.post(this.url+'/add',form,{headers}).pipe(
     tap(
       (res:any)=>
       {
@@ -38,7 +41,7 @@ export class CoursemanageService {
   
   get() {
     const headers = { 'X-Show-Spinner': 'true' };
-   return  this.httpClient.get<Course[]>(`${this.url}/getCourse`,{headers}).pipe(
+   return  this.httpClient.get<Course[]>(`${this.url}/getAll`,{headers}).pipe(
       tap(
         (courses:any)=>{
           this.courseSignal.set(courses)
@@ -48,7 +51,7 @@ export class CoursemanageService {
   }
 
   getCourseThumbnail(courseId: number) {
-    return this.httpClient.post(`${this.url}/findCourseThumbnail`,courseId).pipe(
+    return this.httpClient.get(`${this.url}/findCourseThumbnail?courseId=`+courseId).pipe(
       tap(
         (res: any)=>
         {
@@ -63,7 +66,7 @@ export class CoursemanageService {
 
   editCourse(form: FormGroup) {
     const headers = { 'X-Show-Spinner': 'true' };
-    return this.httpClient.post(`${this.url}/editCourse`,form,{headers}).pipe(
+    return this.httpClient.put(`${this.url}/update`,form,{headers}).pipe(
       tap(
         (res: any)=>
         {
@@ -81,8 +84,8 @@ export class CoursemanageService {
   }
   deleteCourse(id: number) {
     const headers = { 'X-Show-Spinner': 'true' };
-    const requestUrl = this.url +'/deleteCourse?courseId='+id;
-    return this.httpClient.get<any>(requestUrl,{headers}).pipe(
+    const requestUrl = this.url +'/delete?courseId='+id;
+    return this.httpClient.delete<any>(requestUrl,{headers}).pipe(
       tap(
         (res:any)=>
         {
@@ -91,8 +94,26 @@ export class CoursemanageService {
       ) );
   }
   
-
-  
+  getCategory() {
+    const headers = { 'X-Show-Spinner': 'true' };
+   return  this.httpClient.get<Category[]>(`${this.url2}`,{headers}).pipe(
+      tap(
+        (category:any)=>{
+          this.category.set(category)
+        }
+      )
+    );
+  }
+  addCategory(newCategory: { id: number; category: string; }) {
+    return this.httpClient.post(this.url2,newCategory,{headers:{ 'X-Show-Spinner': 'true' }}).pipe(
+      tap(
+        (res:any)=>
+        {
+          this.category().push(res);
+        }
+      )
+    )
+  }
 
   
 }
