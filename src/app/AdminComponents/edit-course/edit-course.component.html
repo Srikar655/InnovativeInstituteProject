@@ -1,3 +1,4 @@
+
 <div class="container">
   <h2>Edit Course</h2>
   <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
@@ -18,6 +19,7 @@
       </div>
     </div>
 
+    
     <!-- Course Thumbnail -->
     <div>
       <label for="coursethumbnail">Course Thumbnail (Optional)</label>
@@ -42,6 +44,19 @@
         Course features are required.
       </div>
     </div>
+
+    <mat-form-field appearance="fill">
+      <mat-label >Select Course Category</mat-label>
+      <mat-select formControlName="courseCategory" [(value)]="selectedCategory">
+        
+        <mat-option *ngFor="let category of categories()" [value]="category">{{category.category}}</mat-option>
+    
+        <mat-option  (click)="onAddCategoryClick()">
+          <mat-icon style="vertical-align: middle;">add</mat-icon> Add Category
+        </mat-option>
+       
+      </mat-select>
+    </mat-form-field>
 
     <div>
       <label for="courseTrailer">Course Trailer (URL)</label>

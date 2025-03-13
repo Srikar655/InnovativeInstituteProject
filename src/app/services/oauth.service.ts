@@ -7,7 +7,7 @@ declare var google:any;
 })
 export class OauthService {
 
-  url:string="http://localhost:9090/api";
+  url:string="http://localhost:9090";
   http=inject(HttpClient);
   constructor() { }
   router=inject(Router);
@@ -20,17 +20,22 @@ export class OauthService {
         localStorage.setItem('oauthToken',res.credential),
         this.navigate();
       }
-    })
+    });
+    google.accounts.id.prompt((notification:any) => {
+      console.log(notification);
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+      }
+  });
     google.accounts.id.renderButton(document.getElementById('login-btn'),{
       theme:'filled_blue',
       width:200
-    })
+    });
   }
   navigate():void
   {
     const headers = { 'X-Show-Spinner': 'true' };
     this.http.get(this.url+"/login",{headers}).subscribe({
-      next:res=>{localStorage.setItem('userIdentity',JSON.stringify(res))},
+      next:res=>{console.log(res);localStorage.setItem('userIdentity',JSON.stringify(res))},
       error:err=>console.log(err)
     });
   }

@@ -1,21 +1,27 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormArray, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormArray, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 
 import { SafeUrlPipePipe } from '../../pipes/safe-url-pipe.pipe';
 import { CoursemanageService } from '../../services/coursemanage.service';
-import Swal from 'sweetalert2';
-import { tap } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
 import { PopupserviceService } from '../../services/popupservice.service';
+import {  MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialog } from '@angular/material/dialog';
+import { AddCategoryComponent } from '../add-category/add-category.component';
 
 
 @Component({
   selector: 'app-add-course',
-  imports: [CommonModule,FormsModule,ReactiveFormsModule,SafeUrlPipePipe],
+  imports: [CommonModule,FormsModule,ReactiveFormsModule,SafeUrlPipePipe,MatIconModule,MatSelectModule,MatButtonModule,MatCardModule,MatInputModule],
   templateUrl: './add-course.component.html',
   styleUrl: './add-course.component.css'
 })
 export class AddCourseComponent implements OnInit {
+
   fb = inject(FormBuilder);
   myReactiveForm!: FormGroup;
   url: string = '';  
@@ -24,6 +30,8 @@ export class AddCourseComponent implements OnInit {
   courseService=inject(CoursemanageService);
   popupservice=inject(PopupserviceService)
   worker!:Worker;
+  categories=this.courseService.category;
+  matdialog=inject(MatDialog);
   openModal($event:Event,url:any): void {
     if($event.isTrusted)
     {
@@ -53,8 +61,17 @@ export class AddCourseComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    this.courseService.getCategories().subscribe({
+      next:res=>{
+      },
+      error:err=>
+      {
+        console.log(err);
+      }
+    });
     this.myReactiveForm = this.fb.group({
       coursethumbnail:[],
+      courseCategory:null,
       coursename: ['', [Validators.required]],
       courseprice: ['', [Validators.required]],
       courseTrailer:['',[Validators.required]],
@@ -62,6 +79,7 @@ export class AddCourseComponent implements OnInit {
       courseFeatures:this.fb.array([]),
       vedios: this.fb.array([])
     });
+
   }
   addFeatures()
   {
@@ -179,5 +197,16 @@ export class AddCourseComponent implements OnInit {
       }
     }
   }
+  
+
+
+  
+  onAddCategoryClick(): void {
+    this.matdialog.open(AddCategoryComponent,{
+      width:'400px',
+      height:'400px'
+    })
+  }
+  
 
 }

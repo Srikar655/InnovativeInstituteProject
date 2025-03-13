@@ -1,4 +1,5 @@
 export interface Course {
+  courseCategory: any
     id:number
     coursename:string,
     courseprice:number

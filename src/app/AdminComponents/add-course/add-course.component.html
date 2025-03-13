@@ -44,6 +44,27 @@
     (change)="thumbnailchange($event)"
   />
 </div>
+<mat-form-field appearance="fill">
+  <mat-label>Select Course Category</mat-label>
+  <mat-select formControlName="courseCategory">
+    <!-- Default option -->
+    <mat-option [value]="null" disabled>Select Course Category</mat-option>
+
+    <!-- Loop through categories -->
+    <mat-option *ngFor="let category of categories()" [value]="category">{{category.category}}</mat-option>
+
+    <!-- Conditionally show Add Category input field or plus icon -->
+    <mat-option  (click)="onAddCategoryClick()">
+      <mat-icon style="vertical-align: middle;">add</mat-icon> Add Category
+    </mat-option>
+
+    <!-- Show input field if the user is adding a category -->
+   
+  </mat-select>
+</mat-form-field>
+
+
+
 
   <input
     type="text"

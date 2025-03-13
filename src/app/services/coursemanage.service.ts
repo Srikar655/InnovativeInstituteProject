@@ -94,16 +94,7 @@ export class CoursemanageService {
       ) );
   }
   
-  getCategory() {
-    const headers = { 'X-Show-Spinner': 'true' };
-   return  this.httpClient.get<Category[]>(`${this.url2}`,{headers}).pipe(
-      tap(
-        (category:any)=>{
-          this.category.set(category)
-        }
-      )
-    );
-  }
+ 
   addCategory(newCategory: { id: number; category: string; }) {
     return this.httpClient.post(this.url2,newCategory,{headers:{ 'X-Show-Spinner': 'true' }}).pipe(
       tap(
@@ -114,6 +105,16 @@ export class CoursemanageService {
       )
     )
   }
-
+  getCategories()
+  {
+    return this.httpClient.get(this.url2,{headers:{'X-Show-Spinner': 'true'}}).pipe(
+      tap(
+        (res:any)=>
+        {
+          this.category.set(res);
+        }
+      )
+    )
+  }
   
 }

@@ -83,7 +83,7 @@
     background-color: #0056b3;
   }
   
-  div *ngIf {
+  div  {
     color: red;
     font-size: 14px;
     margin-top: 5px;
