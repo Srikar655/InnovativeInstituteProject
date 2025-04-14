@@ -1,0 +1,55 @@
+<!-- Tasks Section -->
+<div class="tasks-header">
+    <h3>Tasks</h3>
+    <!-- Container to align Add Task and Show More buttons on the same line -->
+    <div class="buttons-container">
+      <button *ngIf="tasks()!=null &&tasks().length > 3" class="show-more-btn" (click)="openModal()">Show More</button>
+    </div>
+  </div>
+  
+  <div class="tasks-container">
+    <h3 hidden>{{ fetchTaskDetails() }}</h3>
+    <div class="task-list">
+      <!-- Each task is a scrollable item -->
+       @if(tasks() !=null)
+       {
+        <div class="task-item"  *ngFor="let usertask of tasks().slice(0, 3)" (click)="openTaskDetails(usertask)" #scrollableItem>
+            @if(usertask.accessStatus === 'UNLOCKED')
+            {
+                @if(usertask.paymentStatus ==='COMPLETED')
+                {
+                    <h2>{{ usertask.id }}</h2>
+                    <h3>{{ usertask.task.task }}</h3>
+                    <h4>{{ usertask.task.taskprice | currency: 'INR' : 'symbol' }}</h4>
+                }
+                @else {
+                    <img
+                    [src]="'https:/play-lh.googleusercontent.com/JfWvH4z_d2CAXA0FUivPmCqounzvlknndva1YHbhMdkySOjMIHv48whXj9-7VcKRoQ'"
+                    class="sidebar-thumbnail"
+                    alt="Thumbnail" width="50px" height="100px">
+                    <h4>{{ usertask.task.taskprice | currency: 'INR' : 'symbol' }}</h4>
+                    <button (click)="payForTask($event,usertask.id)" class="task-details-btn">Pay To Unlock Task</button>
+                }
+            }
+            @else {
+                <img src="'https:/quotefancy.com/media/wallpaper/1600x900/4929570-Rick-Mears-Quote-To-finish-first-you-must-first-finish.jpg'" alt="Locked" class="locked-icon">
+            }
+        </div>
+       }
+    </div>
+  </div>
+  
+  <!-- Modal for Infinite Scrolling -->
+  <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>All Tasks</h3>
+      <div class="task-list">
+        <div class="task-item" *ngFor="let usertask of tasks()" (click)="openTaskDetails(usertask)" #scrollableItem>
+            <h2>{{ usertask.id }}</h2>
+            <h3>{{ usertask.task.task }}</h3>
+            <h4>{{ usertask.task.taskprice | currency: 'INR' : 'symbol' }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  

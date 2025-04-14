@@ -3,7 +3,7 @@
   <button mat-fab class="add-video-btn" (click)="openAddVideoDialog()">
     <mat-icon>add</mat-icon>
   </button>
-
+  <div hidden>{{loadVideos()}}</div>
   <div class="infinite-scroll-container">
     <div class="sidebar-header">
       <h2>Video Sidebar</h2>

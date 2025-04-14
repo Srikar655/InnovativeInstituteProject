@@ -9,7 +9,7 @@ addEventListener('message', ({ data }) => {
     if (index > 0) {
       pdf.addPage();
     }
-    const imgData = 'data:image/png;base64,' + image.taskImage;
+    const imgData = 'data:image/png;base64,' + image;
     pdf.addImage(imgData, 'PNG', 0, 0, 200, 200);
   });
 

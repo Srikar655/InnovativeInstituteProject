@@ -1,0 +1,51 @@
+<div class="task-add-dialog">
+    <h2>Upload Task Solution</h2>
+  
+    <form [formGroup]="myReactiveForm" (ngSubmit)="save($event)">
+      <!-- Left side of the form -->
+      <div class="form-content">
+        <!-- User Task ID (Hidden) -->
+        <input formControlName="usertask" type="hidden" />
+  
+        <!-- Task Description -->
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input id="description" type="text" formControlName="description" placeholder="Enter task description" />
+          <div *ngIf="myReactiveForm.get('description')?.invalid && myReactiveForm.get('description')?.touched" class="error">
+            Description is required and must be between 6 and 100 characters.
+          </div>
+        </div>
+  
+        <!-- Task Images Upload -->
+        <div class="form-group">
+          <label for="solutionimages">Upload Task Images</label>
+          <input id="solutionimages" type="file" multiple (change)="fileChanged($event)" />
+          <div class="uploaded-images">
+            <span *ngFor="let image of myReactiveForm.get('solutionimages')?.value">
+              Image uploaded successfully
+            </span>
+          </div>
+        </div>
+  
+        <!-- Form Buttons -->
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-submit" [disabled]="myReactiveForm.invalid">
+            Save Task
+          </button>
+          <button type="button" class="btn btn-cancel" (click)="onCancel($event)">Cancel</button>
+        </div>
+      </div>
+  
+      <!-- Right side: Image List for Editing -->
+      <div class="image-list" *ngIf="myReactiveForm.get('solutionimages')?.value.length > 0">
+        <h3>Uploaded Images</h3>
+        <div class="image-scroll">
+          <div class="image-card" *ngFor="let image of selectedImages; let i = index">
+            <img [src]="image" alt="Task Image" />
+            <button type="button" (click)="onDeleteImage($event, i)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  

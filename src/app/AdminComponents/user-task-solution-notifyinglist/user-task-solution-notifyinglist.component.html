@@ -1,0 +1,43 @@
+<table>
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>User</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(solution of taskResults();track $index) {
+            <tr (click)="onSelect(solution)">
+                <td>{{solution.usertask.task.task}}</td>
+                <td>{{solution.email}}</td>
+            </tr>
+        }
+        @if(pdfUrl!=null && selectedSolution!=null) {
+            <!-- New table row for the form -->
+            <tr>
+                <!-- Span all columns with colspan -->
+                <td colspan="2">
+                    <form [formGroup]="myReactiveForm" (ngSubmit)="onSubmit($event)">
+                        <iframe [src]="pdfUrl | safeUrlPipe" frameborder="0"></iframe>
+                        {{selectedSolution.description}}
+                        <div>
+                            <label>
+                                Correct
+                                <input type="radio" formControlName="correctionStatus" value="CORRECT">
+                            </label>
+                            <label>
+                                InCorrect
+                                <input type="radio" formControlName="correctionStatus" value="WRONG">
+                            </label>
+                        </div>
+                        <button class="mic-toggle" id="mic" (click)="startRecording()" type="button">
+                            <span class="material-icons">mic</span>
+                        </button>
+                        <audio class="playback" controls></audio>
+                        <button type="submit" [disabled]="myReactiveForm.invalid">Submit</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

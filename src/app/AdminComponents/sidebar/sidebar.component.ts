@@ -30,7 +30,22 @@ export class SidebarComponent
   loadVideos=computed(()=>
     {
         const id=this.courseId()    
-        this.service.getVideos(id as number, this.page, this.fetchSize, false)
+        if(id!=0)
+          {    
+            console.log("hello");
+            this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, false).subscribe({
+              next:(res:any)=>{
+                this.page += 1;
+                if(res==null || res.length<this.dynamicFetchSize)
+                  {
+                    this.noMoreVideos=true;
+                  }
+              },
+              error:err=>{
+                console.log(err);
+              }
+            });
+          }
     })
   videoselected=model<Vedio | undefined>(undefined);
   loadingVideos:boolean=false;
@@ -39,20 +54,6 @@ export class SidebarComponent
   {
     this.videoselected.set(this.videos()[index]);
   } 
-  ngOnInit() {
-    this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, false).subscribe({
-      next:res=>{
-        this.page += 1;
-        if(res.length<this.dynamicFetchSize)
-        {
-          this.noMoreVideos=true;
-        }
-      },
-      error:err=>{
-        console.log(err);
-      }
-    });
-  }
   ngAfterViewInit() {
     this.observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
@@ -90,10 +91,10 @@ export class SidebarComponent
       this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, true).subscribe({
         next:res=>{
           this.page += 1;
-          if(res.length<this.dynamicFetchSize)
-          {
-            this.noMoreVideos=true;
-          }
+          if(res==null || res.length<this.dynamicFetchSize)
+            {
+              this.noMoreVideos=true;
+            }
         },
         error:err=>{
           console.log(err);

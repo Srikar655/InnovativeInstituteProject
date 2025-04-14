@@ -1,0 +1,20 @@
+<div class="course-list">
+    <div class="course-item" *ngFor="let course of courses(); let i = index">
+      <a [routerLink]="['/course-details', course.id]" class="course-link">
+        <div class="course-thumbnail">
+          <img [src]="course?.coursethumbnail ? 'data:image/png;base64,' + course.coursethumbnail : 'https://as2.ftcdn.net/v2/jpg/01/02/45/61/1000_F_102456100_OOTt9tI6c4RQUf2BVpAR4rUPF5qmS3Ah.jpg'" 
+               alt="Loading" 
+               class="course-image" 
+               id="course-{{ course.id }}" 
+               #courseItem />
+        </div>
+  
+        <div class="course-info">
+          <h3>{{ course.coursename }}</h3>
+          <p class="course-price">  {{ course.courseprice | currency:'INR':'symbol' }}</p>
+        </div>
+      </a>
+      
+    </div>
+  </div>
+  

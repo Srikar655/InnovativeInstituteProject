@@ -1,10 +1,39 @@
 <nav class="navbar">
-    <div class="logo" (click)="navigateToCourses()">
-      <h2>My Dashboard</h2>
+  <div class="logo" (click)="navigateToCourses()">
+    <h2>My Dashboard</h2>
+  </div>
+  <ul class="nav-links">
+    <li>
+      <a routerLink="/user-homepage" routerLinkActive="active">Courses</a>
+    </li>
+    <li class="notification-item">
+      <a routerLink="/user-tasksolution-info" routerLinkActive="active">
+        User Task Solutions Info
+        <span class="notification-badge" *ngIf="notificationCount > 0">
+          {{ notificationCount }}
+        </span>
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" *ngIf="notifications?.length">
+
+  <div *ngFor="let note of notifications" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+
+    <div class="toast-header">
+      <img src="assets/logo.png" class="rounded me-2" alt="..." style="width: 20px; height: 20px;">
+      <strong class="me-auto">Task Update</strong>
+      <small class="text-muted">just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" (click)="removeNotification(note)"></button>
     </div>
-    <ul class="nav-links">
-      <li><a routerLink="/courses" routerLinkActive="active">Courses</a></li>
-      <li><a routerLink="/addcourses" routerLinkActive="active">Add Courses</a></li>
-    </ul>
-  </nav>
+
+    <div class="toast-body">
+      {{ note.message }}
+    </div>
+
+  </div>
   
+</div>
+

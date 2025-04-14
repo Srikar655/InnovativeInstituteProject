@@ -95,8 +95,8 @@ export class CoursemanageService {
   }
   
  
-  addCategory(newCategory: { id: number; category: string; }) {
-    return this.httpClient.post(this.url2,newCategory,{headers:{ 'X-Show-Spinner': 'true' }}).pipe(
+  addCategory(courseCategory: { id: number; category: string; }) {
+    return this.httpClient.post(this.url2,courseCategory,{headers:{ 'X-Show-Spinner': 'true' }}).pipe(
       tap(
         (res:any)=>
         {

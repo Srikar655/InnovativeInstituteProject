@@ -1,0 +1,55 @@
+<div class="container">
+@if(course()?.subscriptionStatus==='PENDING')
+{
+  <input type="button" value="Subscribe" (click)="redirectToPaymentGateWay()">
+}
+@else 
+{
+  {{course()?.id}}
+  <app-videos-display [courseId]="course()?.id" [(videoselected)]="video"></app-videos-display>
+}
+
+<div class="course-list">
+<div class="course-item">
+    <h2 class="course-title">{{ course()?.course?.coursename }}</h2>
+    <p class="course-price">Price: {{ course()?.course?.courseprice | currency:'INR':'symbol' }}</p>
+    <img [src]="'data:image/png;base64,' + course()?.course?.coursethumbnail" class="course-thumbnail" #courseItem />
+
+    <div class="course-description-container">
+        <p class="course-description" id="course-description">
+        {{ course()?.course?.courseDescription }}
+        </p>
+        <span class="read-more-btn" id="read-more-btn" onclick="toggleDescription()">Read More</span>
+        <ul class="course-features">
+            <li *ngFor="let feature of course()?.course?.courseFeatures">{{ feature }}</li>
+          </ul>
+    
+          <div class="course-trailer">
+            <iframe
+              [src]="course()?.course?.courseTrailer ? (course()?.course!.courseTrailer | safeUrlPipe) : '' | safeUrlPipe"
+              class="video-iframe"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+</div>
+<div *ngIf="video() && video()?.vedio?.videourl" class="video-details">
+  <div class="video-content">
+    <div class="video-header">
+      <h1 class="course-id-title">{{ video()?.id }}</h1>
+    </div>
+    <h2 class="video-title">{{ video()?.vedio?.vediotitle }}</h2>
+    <p class="video-price">Price: {{ video()?.vedio?.vedioprice| currency:'INR':'symbol' }}</p>
+    <p class="video-description">{{ video()?.vedio?.vedioprice }}</p>
+  </div>
+  <div class="video-iframe-container">
+    <iframe
+      [src]="(video()?.vedio?.videourl ?? '') | safeUrlPipe"
+      class="video-iframe"
+      frameborder="0"
+      allowfullscreen
+    ></iframe>
+  </div>
+</div>
+<app-task-details *ngIf="video()!=null && video()?.id!=0" [videoId]="video()?.id"></app-task-details>
+</div>
+</div>

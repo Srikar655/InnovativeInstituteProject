@@ -5,12 +5,14 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
 
 
 
+
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,HomePageComponent,NgxSpinnerComponent],
+  imports: [RouterOutlet, NgxSpinnerComponent, HomePageComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  
   title = 'Innovativetutorialproject';
 }

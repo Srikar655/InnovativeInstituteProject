@@ -31,13 +31,12 @@ export class TasksComponent implements AfterViewInit {
   @ViewChildren('scrollableItem') scrollableDiv!: QueryList<ElementRef>;
 
   fetchTasks = computed(() => {
-    console.log(this.videoId());
     const id = this.videoId() as number;
     if (id !== null) {
       this.service.getTasks(id, this.page, this.fetchSize, false).subscribe({
         next: (res) => {
           this.page += 1;
-          if (res.length < this.dynamicFetchSize) {
+          if (res==null || this.dynamicFetchSize>res.length) {
             this.noMoreTasks = true;
           }
         },
@@ -85,10 +84,10 @@ export class TasksComponent implements AfterViewInit {
   }
 
   onScroll() {
-    this.page++;
     if (!this.noMoreTasks) {
-      this.service.getTasks(this.videoId() as number, this.page, this.dynamicFetchSize, true).subscribe({next:(newTasks) => {
-        if (newTasks.length < this.dynamicFetchSize) {
+      this.service.getTasks(this.videoId() as number, this.page, this.dynamicFetchSize, true).subscribe({next:(res) => {
+        this.page++;
+        if (res==null || this.dynamicFetchSize>res.length) {
           this.noMoreTasks = true;
         }
       },

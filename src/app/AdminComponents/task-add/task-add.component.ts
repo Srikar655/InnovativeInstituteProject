@@ -66,7 +66,6 @@ export class TaskAddComponent implements OnInit{
         this.worker.onmessage=({data})=>
           {
             const task = this.myReactiveForm.get('taskimages') as FormArray;
-            console.log(Array.from(data));
             task.push(this.fb.control({taskImage:Array.from(data),displayImage:URL.createObjectURL(file)}));
           }
     }

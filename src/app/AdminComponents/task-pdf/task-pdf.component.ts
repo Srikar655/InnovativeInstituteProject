@@ -56,8 +56,10 @@ export class TaskPdfComponent implements OnInit, AfterViewInit {
         next:res => {
           this.task.taskimage=res as any[];
           this.worker = new Worker(new URL('../../webworkers/pdf-worker.worker', import.meta.url));
-
-          this.worker.postMessage({taskImages:this.task.taskimage});
+          this.worker.postMessage({
+            taskImages: this.task.taskimage.map((image: any) => image.taskImage)
+          });
+          
           this.worker.onmessage=({data})=>
           {
             this.pdfUrl = URL.createObjectURL(data);

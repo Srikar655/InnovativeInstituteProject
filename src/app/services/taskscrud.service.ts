@@ -31,7 +31,7 @@ export class TaskscrudService {
     }
     else
     {
-      return this.httpClient.put(this.url1+'/updateTask',task,{headers}).pipe(
+      return this.httpClient.put(this.url1+'/update',task,{headers}).pipe(
         tap(
           (res:any)=>
           {

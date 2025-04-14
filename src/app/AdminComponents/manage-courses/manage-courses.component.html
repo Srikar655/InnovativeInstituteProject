@@ -22,7 +22,7 @@
 
       <div class="course-trailer">
         <iframe
-          [src]="course()?.courseTrailer ? (course()!.courseTrailer | safeUrlPipe) : ''"
+          [src]="course()?.courseTrailer ? (course()!.courseTrailer | safeUrlPipe) : '' |safeUrlPipe"
           class="video-iframe"
           frameborder="0"
           allowfullscreen

@@ -27,25 +27,23 @@ export class ManageCoursesComponent implements OnInit {
   courseId!: number;
   videos=this.videoService.videos;
   dialogRef=inject(MatDialog);
-  courseData=signal<Course|null>(null);
-  course=computed(()=>{
-    this.service.getCourseThumbnail(this.courseId).subscribe({
-      next:res=>
-      {
-          if (this.courseData()) {
-            this.courseData()!.coursethumbnail = res.coursethumbnail as Uint8Array;
-          }
-      }
-    });
-    return this.courseData();
-});
+  course=signal<Course|null>(null);
+  
   popupservice=inject(PopupserviceService);
   video=model<Vedio | undefined>();
   ngOnInit(): void {
     this.courseId = Number(this.route.snapshot.paramMap.get('id'));
     this.service.getCourse(this.courseId).subscribe({
       next: (res: any) => {
-        this.courseData.set(res);
+        this.course.set(res);
+        this.service.getCourseThumbnail(this.courseId).subscribe({
+          next:res=>
+          {
+              if (this.course()) {
+                this.course()!.coursethumbnail = res.coursethumbnail as Uint8Array;
+              }
+          }
+        });
       }
     });
     
@@ -70,7 +68,7 @@ export class ManageCoursesComponent implements OnInit {
         next:(res:any)=>
         {
           this.video.set(undefined);
-          this.popupservice.sweetSuccessAllert(res.response);
+          this.popupservice.sweetSuccessAllert("Video Deleted Successfully");
         },
         error:(error:any)=>
         {
@@ -91,7 +89,7 @@ export class ManageCoursesComponent implements OnInit {
     });
     dialogReference.afterClosed().subscribe((res: any) => {
       if (res) {
-        this.courseData.set(res);
+        this.course.set(res);
       } else {
         console.log('No response received from dialog');
       }

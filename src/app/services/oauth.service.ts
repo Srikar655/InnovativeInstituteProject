@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { EmailDetails } from '../models/EmailDetails';
 declare var google:any;
 @Injectable({
   providedIn: 'root'
 })
 export class OauthService {
 
-  url:string="http://localhost:9090";
+  url:string="http://localhost:9090/api";
   http=inject(HttpClient);
   constructor() { }
   router=inject(Router);
@@ -35,9 +36,14 @@ export class OauthService {
   {
     const headers = { 'X-Show-Spinner': 'true' };
     this.http.get(this.url+"/login",{headers}).subscribe({
-      next:res=>{console.log(res);localStorage.setItem('userIdentity',JSON.stringify(res))},
+      next:(res:any)=>{
+        localStorage.setItem('userIdentity',JSON.stringify(res));
+        /*this.router.navigate(['/user-homepage'])*/
+      },
       error:err=>console.log(err)
+      
     });
+    
   }
 
 }
