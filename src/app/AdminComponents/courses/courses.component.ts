@@ -22,6 +22,7 @@ export class CoursesComponent implements OnInit, AfterViewInit {
   cdRef=inject(ChangeDetectorRef);
   popupservice=inject(PopupserviceService);
   ngOnInit(): void {
+    console.log("Courses component initialized");
     this.service.get().subscribe({
       error:(error:any)=>
       {

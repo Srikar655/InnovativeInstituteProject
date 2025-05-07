@@ -1,6 +1,6 @@
 <div class="course-list">
   <div class="course-item" *ngFor="let course of courseSignal(); let i = index">
-    <a [routerLink]="['/managecourses', course.id]" class="course-link">
+    <a [routerLink]="['/adminHomePage/managecourses', course.id]" class="course-link">
       <div class="course-thumbnail">
         <img [src]="course?.coursethumbnail ? 'data:image/png;base64,' + course.coursethumbnail : 'https://as2.ftcdn.net/v2/jpg/01/02/45/61/1000_F_102456100_OOTt9tI6c4RQUf2BVpAR4rUPF5qmS3Ah.jpg'" 
              alt="Loading" 

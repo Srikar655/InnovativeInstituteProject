@@ -2,8 +2,9 @@ import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, QueryList, Si
 import { CoursemanageService } from '../../services/coursemanage.service';
 import { Course } from '../../models/course';
 import { PopupserviceService } from '../../services/popupservice.service';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
   selector: 'app-homepage',

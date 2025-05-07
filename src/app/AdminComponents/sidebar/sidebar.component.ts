@@ -32,7 +32,7 @@ export class SidebarComponent
         const id=this.courseId()    
         if(id!=0)
           {    
-            console.log("hello");
+            this.loadingVideos=true;
             this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, false).subscribe({
               next:(res:any)=>{
                 this.page += 1;
@@ -40,6 +40,7 @@ export class SidebarComponent
                   {
                     this.noMoreVideos=true;
                   }
+                  this.loadingVideos=false;
               },
               error:err=>{
                 console.log(err);
@@ -85,7 +86,6 @@ export class SidebarComponent
     }
     this.loadingVideos=true;
     this.fethVideos()
-    this.loadingVideos=false;
   }
   fethVideos() { 
       this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, true).subscribe({
@@ -94,6 +94,7 @@ export class SidebarComponent
           if(res==null || res.length<this.dynamicFetchSize)
             {
               this.noMoreVideos=true;
+              this.loadingVideos=false;
             }
         },
         error:err=>{

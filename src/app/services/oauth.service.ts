@@ -38,7 +38,7 @@ export class OauthService {
     this.http.get(this.url+"/login",{headers}).subscribe({
       next:(res:any)=>{
         localStorage.setItem('userIdentity',JSON.stringify(res));
-        /*this.router.navigate(['/user-homepage'])*/
+        this.router.navigate([''])
       },
       error:err=>console.log(err)
       

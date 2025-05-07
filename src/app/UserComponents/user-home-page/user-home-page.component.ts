@@ -1,16 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { WebsocketService } from '../../services/websocket.service';
 import { NgxSpinnerComponent } from 'ngx-spinner';
+import { WebsocketService } from '../../services/websocket.service';
+
 @Component({
-  selector: 'app-home-page',
-  imports: [RouterLink,CommonModule,RouterOutlet, NgxSpinnerComponent],
-  templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.css'
+  selector: 'app-user-home-page',
+  imports: [RouterOutlet,CommonModule,NgxSpinnerComponent,RouterLink],
+  templateUrl: './user-home-page.component.html',
+  styleUrl: './user-home-page.component.css'
 })
-export class HomePageComponent implements OnInit {
-  router=inject(Router);
+export class UserHomePageComponent {
+router=inject(Router);
   websocketservice=inject(WebsocketService);
   
   constructor(){
@@ -23,7 +24,7 @@ export class HomePageComponent implements OnInit {
   
   navigateToCourses()
   {
-    this.router.navigate(['/adminHomePage/courses']);
+    this.router.navigate(['/usercourses']);
   }
   ngOnInit() {
     console.log("Home page component initialized");
@@ -47,5 +48,4 @@ export class HomePageComponent implements OnInit {
   removeNotification(note: any) {
     this.notifications = this.notifications.filter((n: any) => n !== note);
   }
-  
 }

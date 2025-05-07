@@ -1,0 +1,50 @@
+<ngx-spinner>
+    <div class="terminal-loader">
+      <div class="terminal-header">
+        <div class="terminal-title">Status</div>
+        <div class="terminal-controls">
+          <div class="control close"></div>
+          <div class="control minimize"></div>
+          <div class="control maximize"></div>
+        </div>
+      </div>
+      <div class="text">Loading...</div>
+    </div>
+  </ngx-spinner>
+  
+  <nav class="navbar">
+    <div class="logo" (click)="navigateToCourses()">
+      <h2>My Dashboard</h2>
+    </div>
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/usercourses" routerLinkActive="active">Courses</a>
+      </li>
+      <li class="notification-item">
+        <a routerLink="#" routerLinkActive="active">
+          Notifications
+          <span class="notification-badge" *ngIf="notificationCount > 0">
+            {{ notificationCount }}
+          </span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/adminHomePage" routerLinkActive="active">GO TO ADMIN SIDE</a>
+      </li>
+    </ul>
+  </nav>
+  
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" *ngIf="notifications?.length">
+    <div *ngFor="let note of notifications" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <img src="assets/logo.png" class="rounded me-2" alt="..." style="width: 20px; height: 20px;">
+        <strong class="me-auto">Task Update</strong>
+        <small class="text-muted">just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" (click)="removeNotification(note)"></button>
+      </div>
+      <div class="toast-body">
+        {{ note.message }}
+      </div>
+    </div>
+  </div>
+<router-outlet></router-outlet>

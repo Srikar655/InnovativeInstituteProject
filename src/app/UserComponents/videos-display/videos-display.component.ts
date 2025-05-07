@@ -29,6 +29,7 @@ export class VideosDisplayComponent {
         {
           if(id!=null&&id!=0)
           {    
+            this.loadingVideos=true;
             this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, false).subscribe({
               next:(res:any)=>{
                 this.page += 1;
@@ -36,6 +37,7 @@ export class VideosDisplayComponent {
                   {
                     this.noMoreVideos=true;
                   }
+                  this.loadingVideos=false;
               },
               error:err=>{
                 console.log(err);
@@ -83,7 +85,6 @@ export class VideosDisplayComponent {
     }
     this.loadingVideos=true;
     this.fethVideos()
-    this.loadingVideos=false;
   }
   fethVideos() { 
       this.service.getVideos(this.courseId() as number, this.page, this.dynamicFetchSize, true).subscribe({
@@ -93,6 +94,7 @@ export class VideosDisplayComponent {
           {
             this.noMoreVideos=true;
           }
+          this.loadingVideos=false;
         },
         error:(err:Error)=>{
           console.log(err);

@@ -6,7 +6,7 @@ export const redirectGuard: CanActivateFn = (route, state) => {
   const router=inject(Router)
   if(token==null)
   {
-    router.navigate(['/']);
+    router.navigate(['/login']);
     return false
   }
   return true;
