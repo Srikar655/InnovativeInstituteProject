@@ -3,6 +3,8 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NgxSpinnerComponent } from 'ngx-spinner';
 import { WebsocketService } from '../../services/websocket.service';
+import { Observable } from 'rxjs';
+import { OauthService } from '../../services/oauth.service';
 
 @Component({
   selector: 'app-user-home-page',
@@ -13,7 +15,9 @@ import { WebsocketService } from '../../services/websocket.service';
 export class UserHomePageComponent {
 router=inject(Router);
   websocketservice=inject(WebsocketService);
-  
+  oauthService=inject(OauthService);
+  isAdmin$:Observable<boolean>=this.oauthService.isAdmin$;
+
   constructor(){
     this.websocketservice.connect();
   }
@@ -27,7 +31,7 @@ router=inject(Router);
     this.router.navigate(['/usercourses']);
   }
   ngOnInit() {
-    console.log("Home page component initialized");
+    this.isAdmin$=this.oauthService.isAdmin$;
     this.websocketservice.getNotifications().subscribe((message: any) => {
       console.log("Header nunchi rah babu",message);
       const notification = message.body.array.forEach((element: any) => {

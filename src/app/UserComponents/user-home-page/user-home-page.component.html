@@ -29,7 +29,7 @@
         </a>
       </li>
       <li>
-        <a routerLink="/adminHomePage" routerLinkActive="active">GO TO ADMIN SIDE</a>
+        <a *ngIf="isAdmin$ | async" routerLink="/adminHomePage" routerLinkActive="active">GO TO ADMIN SIDE</a>
       </li>
     </ul>
   </nav>

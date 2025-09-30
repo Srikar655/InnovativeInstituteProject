@@ -1,11 +1,6 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\src",
-    "\\src\\app",
-    "\\src\\app\\AdminComponents",
-    "\\src\\app\\AdminComponents\\add-course"
+    ""
   ],
-  "SelectedNode": "\\src\\app\\AdminComponents\\add-course\\add-course.component.ts",
   "PreviewInSolutionExplorer": false
 }

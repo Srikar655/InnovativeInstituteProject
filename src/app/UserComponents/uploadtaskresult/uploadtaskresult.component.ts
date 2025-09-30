@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TaskAddComponent } from '../../AdminComponents/task-add/task-add.component';
 import { UsertaskService } from '../../userservices/usertask.service';
 import { PopupserviceService } from '../../services/popupservice.service';
+import { OauthService } from '../../services/oauth.service';
 
 @Component({
   selector: 'app-uploadtaskresult',
@@ -21,7 +22,9 @@ export class UploadtaskresultComponent {
   service=inject(UsertaskService);
   worker!:Worker;
   selectedImages:any=[];
+  gitHubToken=false;
   popupservice=inject(PopupserviceService);
+  oauthService=inject(OauthService);
   ngOnInit()
   {
     this.usertaskid=this.data.taskId;
@@ -30,6 +33,7 @@ export class UploadtaskresultComponent {
       solutionimages:this.formbuilder.array([]),
       description:['',[Validators.required,Validators.minLength(6),Validators.maxLength(100)]]
     });
+    localStorage.getItem('githubtoken')?this.gitHubToken=true:this.gitHubToken=false;
   }
   get taskImages(): FormArray {
       return this.myReactiveForm.get('solutionimages') as FormArray;
@@ -83,6 +87,13 @@ export class UploadtaskresultComponent {
           const taskArray = this.myReactiveForm.get('solutionimages') as FormArray;
           taskArray.removeAt(index);
           this.selectedImages.splice(index, 1);
+        }
+      }
+      loginGitHub($event: Event) {
+        if($event.isTrusted)
+        {
+          console.log('Login to GitHub');
+          this.oauthService.checkIsGitHubLoggedIn();
         }
       }
 }

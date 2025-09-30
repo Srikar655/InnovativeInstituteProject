@@ -35,7 +35,9 @@
           <button type="button" class="btn btn-cancel" (click)="onCancel($event)">Cancel</button>
         </div>
       </div>
-  
+      <div class="form=Buttons" *ngIf="!gitHubToken">
+        <button type="button" class="btn btn-delete" (click)="loginGitHub($event)">Login To Git Hub</button>
+      </div>
       <!-- Right side: Image List for Editing -->
       <div class="image-list" *ngIf="myReactiveForm.get('solutionimages')?.value.length > 0">
         <h3>Uploaded Images</h3>
