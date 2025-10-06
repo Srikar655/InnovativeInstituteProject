@@ -1,92 +1,173 @@
+/*
+================================================================
+  HOMEPAGE LAYOUT STYLES
+================================================================
+*/
+
+/* This is the new parent container for the whole page */
+.homepage-layout {
+  display: flex;
+  flex-direction: column; 
+  height: calc(100vh - 90px); 
+  background-color: #f0f2f5;
+}
+
+/* This is the container for your <app-searching> component */
+.filter-area {
+  flex-shrink: 0;
+  padding: 20px 40px 0 40px;
+  position: relative; 
+  z-index: 10;      
+}
+
+/*
+================================================================
+  SCROLL CONTAINER & COURSE LIST
+================================================================
+*/
+
+.scroll-container {
+  flex-grow: 1; 
+  overflow-y: auto; 
+  padding: 0 40px 40px 40px; 
+}
+
 .course-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Adjust number of columns */
-    gap: 20px; /* Space between courses */
-    justify-items: center; /* Center items in the grid */
-    padding: 20px;
-  }
-  
-  .course-item {
+    /* This is our BASE column size for most screens */
+    grid-template-columns: repeat(auto-fit, 320px);
+    /* This is the key: Align items to the left by default */
+    justify-content: space-around;
+    gap: 40px;
+    padding-top: 20px;
+}
+
+
+/* Your existing scrollbar and course card styles are perfect */
+.scroll-container::-webkit-scrollbar { width: 12px; }
+.scroll-container::-webkit-scrollbar-track { background: #212529; }
+.scroll-container::-webkit-scrollbar-thumb {
+    background-color: #bb5050;
+    border-radius: 20px;
+    border: 3px solid #212529;
+}
+.scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: #bb5050 #212529;
+}
+
+.course-item {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-    width: 100%;
-    max-width: 440px; /* Adjust to match the image size */
-    text-align: center;
-    overflow: hidden;
-    height: auto;
-  }
-  
-  .course-item:hover {
-    transform: translateY(-5px);
-  }
-  
-  .course-link {
+}
+
+.course-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+}
+
+.course-link {
     text-decoration: none;
     color: inherit;
-  }
-  
-  .course-thumbnail {
-    height: 200px; /* Adjust as needed */
-    background-color: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.course-thumbnail {
+    width: 100%;
+    aspect-ratio: 2 / 1;
     overflow: hidden;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-  }
-  
-  .course-image {
+}
+
+.course-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 10px 10px 0 0;
-  }
-  
-  .course-info {
-    padding: 15px;
-  }
-  
-  .course-info h3 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    font-weight: 600;
-  }
-  
-  .course-info p.course-price {
-    color: #ff784b;
-    font-size: 1em;
-    font-weight: 600;
-  }
-  .course-actions {
-    display: none;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    gap: 10px; /* Space between the buttons */
-  }
-  
-  .course-item {
-    position: relative; /* So the absolute buttons can be positioned */
+    transition: transform 0.4s ease;
+}
+
+.course-item:hover .course-image {
+    transform: scale(1.05);
+}
+
+.course-info {
+    padding: 0;
+    text-align: center;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-    width: 100%;
-    max-width: 440px;
-    text-align: center;
-    overflow: hidden;
-  }
-  
-  .course-item:hover .course-actions {
-    display: flex;
-  }
-  
- 
+}
 
-  
+.course-title {
+    font-size: 2rem;
+    font-weight: 1000;
+    color: #bb5050;
+    margin: 0;
+    line-height: normal;
+}
 
-  
+.course-price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #f07609;
+    margin-top: auto;
+    padding-top: 0;
+}
+
+/*
+================================================================
+  RESPONSIVENESS
+================================================================
+*/
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    .filter-area {
+        padding: 20px 20px 0 20px;
+    }
+    .scroll-container {
+        padding: 0 20px 20px 20px;
+    }
+    .course-list {
+        gap: 20px;
+        /* On mobile, centering usually looks better */
+        justify-content: center;
+    }
+}
+
+
+/* 
+================================================================
+  STYLES FOR VERY LARGE SCREENS (CORRECTED)
+================================================================
+*/
+@media (min-width: 1600px) {
+  .course-list {
+    /* On screens wider than 1600px, we increase the size of each card */
+    grid-template-columns: repeat(auto-fit, 550px); 
+    
+    /* We can also increase the gap for a more spacious layout */
+    gap: 50px; 
+    
+    /* 
+      REMOVED: justify-content: center;
+      By removing this, the grid will inherit the `justify-content: flex-start` 
+      from the base rule, aligning the cards to the left as intended.
+    */
+  }
+
+  /* Font scaling for readability is still a good idea */
+  .course-title {
+    font-size: 2.2rem;
+  }
+
+  .course-price {
+    font-size: 1.6rem;
+  }
+}

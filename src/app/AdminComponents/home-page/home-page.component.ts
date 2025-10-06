@@ -14,7 +14,7 @@ export class HomePageComponent implements OnInit {
   websocketservice=inject(WebsocketService);
   
   constructor(){
-    this.websocketservice.connect();
+   // this.websocketservice.connect();
   }
 
   notifications:any = [];
@@ -27,22 +27,22 @@ export class HomePageComponent implements OnInit {
   }
   ngOnInit() {
     console.log("Home page component initialized");
-    this.websocketservice.getNotifications().subscribe((message: any) => {
-      console.log("Header nunchi rah babu",message);
-      const notification = message.body.array.forEach((element: any) => {
-        return {message:element};
-      });;
-      this.notifications.push(notification);
-      this.notificationCount = this.notifications.length;
-    }
-    );
-    this.websocketservice.subscribe('/topic/task-result', (message: any) => {
-      console.log("Header nunchi rah babu",message.body);
-      const notification =message.body;
-      this.notifications.push({message:notification});
-      this.notificationCount = this.notifications.length;
-    }
-    );
+    // this.websocketservice.getNotifications().subscribe((message: any) => {
+    //   console.log("Header nunchi rah babu",message);
+    //   const notification = message.body.array.forEach((element: any) => {
+    //     return {message:element};
+    //   });;
+    //   this.notifications.push(notification);
+    //   this.notificationCount = this.notifications.length;
+    // }
+    // );
+    // this.websocketservice.subscribe('/topic/task-result', (message: any) => {
+    //   console.log("Header nunchi rah babu",message.body);
+    //   const notification =message.body;
+    //   this.notifications.push({message:notification});
+    //   this.notificationCount = this.notifications.length;
+    // }
+    // );
   }
   removeNotification(note: any) {
     this.notifications = this.notifications.filter((n: any) => n !== note);

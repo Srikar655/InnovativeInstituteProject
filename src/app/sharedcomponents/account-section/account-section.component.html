@@ -1,0 +1,51 @@
+<div class="account-container">
+  <!-- ======================= -->
+  <!--  Circular Profile Button  -->
+  <!-- ======================= -->
+  <button class="profile-button" (click)="togglePanel($event)" aria-label="Open user menu">
+    <!-- Use the safeUrl pipe to ensure Angular trusts the URL -->
+    <img *ngIf="userIdentity()?.picture" [src]="(userIdentity()?.picture || '') | safeUrlPipe" alt="User profile photo">
+    <i *ngIf="!userIdentity()?.picture" class="material-icons">account_circle</i>
+  </button>
+
+  <!-- ======================= -->
+  <!--   Slide-Out Side Panel    -->
+  <!-- ======================= -->
+  <aside class="account-panel" [class.open]="isPanelOpen" (click)="$event.stopPropagation()">
+    <div class="panel-header">
+      <h3 class="panel-title">My Account</h3>
+      <button class="close-button" (click)="togglePanel($event)" aria-label="Close user menu">&times;</button>
+    </div>
+    <div class="panel-body">
+      <div class="profile-summary">
+        <div class="profile-picture-large">
+          <!-- Also apply the pipe here -->
+          <img *ngIf="userIdentity()?.picture" [src]="(userIdentity()?.picture || '') | safeUrlPipe" alt="User profile photo">
+          <i *ngIf="!userIdentity()?.picture" class="material-icons">account_circle</i>
+        </div>
+        <h4 class="user-name">{{ userIdentity()?.username || 'Not Provided' }}</h4>
+        <p class="user-email">{{ userIdentity()?.email || 'Not Provided' }}</p>
+      </div>
+      <div class="user-details">
+        <div class="detail-item">
+          <i class="material-icons">phone</i>
+          <span>{{ userIdentity()?.phonenumber || 'Not Provided'}}</span>
+        </div>
+        <div class="detail-item">
+          <i class="material-icons">verified_user</i>
+          <span class="user-roles" *ngIf="userIdentity()?.roles?.length">
+            <span *ngFor="let role of userIdentity()?.roles" class="role-badge">{{ role.name.split('_')[1] }}</span>
+          </span>
+          <span *ngIf="!userIdentity()?.roles?.length">No roles assigned</span>
+        </div>
+      </div>
+      <button class="logout-button" (click)="logout()">
+        <i class="material-icons">exit_to_app</i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Backdrop for better focus and mobile experience -->
+  <div class="panel-backdrop" [class.open]="isPanelOpen" (click)="togglePanel($event)"></div>
+</div>

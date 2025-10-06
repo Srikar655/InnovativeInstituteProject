@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { EmailDetails } from '../models/EmailDetails';
 import { BehaviorSubject } from 'rxjs';
+import { User } from '../models/user';
 declare var google:any;
 @Injectable({
   providedIn: 'root'
@@ -11,16 +11,21 @@ export class OauthService {
 
   url:string="http://localhost:9090/api";
   http=inject(HttpClient);
-  constructor() {
-    if(localStorage.getItem('oauthToken'))
-    {
-      this.navigate();
-      this.checkIsGitHubLoggedIn();
-    }
-  }
   router=inject(Router);
   isAdmin=new BehaviorSubject<boolean>(false);
   isAdmin$=this.isAdmin.asObservable();
+  isLoggedIn=new BehaviorSubject<boolean>(false);
+  isLoggedIn$=this.isLoggedIn.asObservable();
+  userIdentity = signal<User | null>(null);
+  constructor() {
+    if(localStorage.getItem('oauthToken'))
+    {
+      this.checkAuthorities();
+      //this.navigate();
+      //this.checkIsGitHubLoggedIn();
+    }
+  }
+  
   Login()
   {
     google.accounts.id.initialize({
@@ -32,7 +37,6 @@ export class OauthService {
       }
     });
     google.accounts.id.prompt((notification:any) => {
-      console.log(notification);
       if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
       }
   });
@@ -41,21 +45,39 @@ export class OauthService {
       width:200
     });
   }
+  logout()
+  {
+    localStorage.removeItem('oauthToken');
+    localStorage.removeItem('userIdentity');
+    this.isAdmin.next(false);
+    this.isLoggedIn.next(false);
+    this.userIdentity.set(null);
+    this.router.navigate(['/']);
+  }
   navigate():void
   {
     const headers = { 'X-Show-Spinner': 'true' };
     this.http.get(this.url+"/login",{headers}).subscribe({
-      next:(res:any)=>{
+      next:(res)=>{
         localStorage.setItem('userIdentity',JSON.stringify(res));
-        if(res['authorities'].includes('ROLE_ADMIN'))
-        {
-          this.isAdmin.next(true);
-        }
-        this.router.navigate(['']);
+        this.checkAuthorities();
+        this.router.navigate(['/']);
       },
       error:err=>console.log(err)
       
     });
+  }
+  checkAuthorities()
+  {
+    const user = localStorage.getItem('userIdentity');
+    if (user) {
+      const userDetails: User = JSON.parse(user);
+      if (userDetails.roles.some((auth: any) => auth.name === 'ROLE_ADMIN')) {
+        this.isAdmin.next(true);
+      }
+      this.isLoggedIn.next(true);
+      this.userIdentity.set(userDetails);
+    }
   }
   checkIsGitHubLoggedIn()
   {

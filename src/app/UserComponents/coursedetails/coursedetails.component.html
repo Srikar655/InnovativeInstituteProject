@@ -1,55 +1,89 @@
-<div class="container">
-@if(course()?.subscriptionStatus==='PENDING')
-{
-  <input type="button" value="Subscribe" (click)="redirectToPaymentGateWay()">
-}
-@else 
-{
-  {{course()?.id}}
-  <app-videos-display [courseId]="course()?.id" [(videoselected)]="video"></app-videos-display>
-}
-
-<div class="course-list">
-<div class="course-item">
-    <h2 class="course-title">{{ course()?.course?.coursename }}</h2>
-    <p class="course-price">Price: {{ course()?.course?.courseprice | currency:'INR':'symbol' }}</p>
-    <img [src]="'data:image/png;base64,' + course()?.course?.coursethumbnail" class="course-thumbnail" #courseItem />
-
-    <div class="course-description-container">
-        <p class="course-description" id="course-description">
-        {{ course()?.course?.courseDescription }}
-        </p>
-        <span class="read-more-btn" id="read-more-btn" onclick="toggleDescription()">Read More</span>
-        <ul class="course-features">
-            <li *ngFor="let feature of course()?.course?.courseFeatures">{{ feature }}</li>
-          </ul>
-    
-          <div class="course-trailer">
-            <iframe
-              [src]="course()?.course?.courseTrailer ? (course()?.course!.courseTrailer | safeUrlPipe) : '' | safeUrlPipe"
-              class="video-iframe"
-              frameborder="0"
-              allowfullscreen
-            ></iframe>
-</div>
-<div *ngIf="video() && video()?.vedio?.videourl" class="video-details">
-  <div class="video-content">
-    <div class="video-header">
-      <h1 class="course-id-title">{{ video()?.id }}</h1>
+<div class="page-container">
+  <!-- ====================================================== -->
+  <!-- DESKTOP SIDEBAR (Playlist)                             -->
+  <!-- ====================================================== -->
+  @if(course()?.subscriptionStatus!=='PENDING') {
+    <div class="desktop-sidebar">
+      <app-videos-display [courseId]="course()?.id" [(videoselected)]="video"></app-videos-display>
     </div>
-    <h2 class="video-title">{{ video()?.vedio?.vediotitle }}</h2>
-    <p class="video-price">Price: {{ video()?.vedio?.vedioprice| currency:'INR':'symbol' }}</p>
-    <p class="video-description">{{ video()?.vedio?.vedioprice }}</p>
+  }
+
+  <!-- ====================================================== -->
+  <!-- MAIN CONTENT AREA                                      -->
+  <!-- ====================================================== -->
+  <div class="main-content">
+    
+    <!-- Subscription Card (if not subscribed) -->
+    @if(course()?.subscriptionStatus==='PENDING') {
+      <div class="subscribe-card card">
+        <h2>Subscribe to Unlock This Course</h2>
+        <p>Gain full access to all videos, materials, and tasks by subscribing now.</p>
+        <button class="subscribe-btn" (click)="redirectToPaymentGateWay()">Subscribe for {{ course()?.course?.courseprice | currency:'INR':'symbol' }}</button>
+      </div>
+    } @else {
+
+      <!-- Course Hero Section (Thumbnail, Title, Price, Description) -->
+      <div class="course-hero card">
+        <div class="hero-thumbnail">
+          <img [src]="'data:image/png;base64,' + course()?.course?.coursethumbnail" alt="Course thumbnail" />
+        </div>
+        <div class="hero-content">
+          <h1 class="course-title">{{ course()?.course?.coursename }}</h1>
+          <p class="course-price">{{ course()?.course?.courseprice | currency:'INR':'symbol' }}</p>
+          <div class="course-description" [class.expanded]="isDescriptionExpanded">
+            {{ course()?.course?.courseDescription }}
+          </div>
+          <button class="read-more-btn" (click)="toggleDescription()">
+            {{ isDescriptionExpanded ? 'Read Less' : 'Read More' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- MOBILE TAB NAVIGATION                                  -->
+      <!-- ====================================================== -->
+      <div class="mobile-tabs">
+        <button [class.active]="activeMobileTab === 'playlist'" (click)="setActiveTab('playlist')">Playlist</button>
+        <button [class.active]="activeMobileTab === 'about'" (click)="setActiveTab('about')">About Course</button>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- MOBILE & DESKTOP CONTENT AREA                        -->
+      <!-- ====================================================== -->
+
+      <!-- Mobile Playlist View -->
+      <div class="mobile-playlist-container" [class.visible]="activeMobileTab === 'playlist'">
+        <app-videos-display [courseId]="course()?.id" [(videoselected)]="video"></app-videos-display>
+      </div>
+      
+      <!-- About the Course Content (for both Mobile and Desktop) -->
+      <div class="about-course-container" [class.visible]="activeMobileTab === 'about'">
+        
+        <div class="about-and-trailer-container">
+          <div class="features-card card">
+            <h3>What You'll Learn</h3>
+            <ul class="course-features">
+              <li *ngFor="let feature of course()?.course?.courseFeatures">{{ feature }}</li>
+            </ul>
+          </div>
+          <div class="trailer-card card">
+            <h3>Course Trailer</h3>
+            <div class="video-container">
+              <iframe [src]="(course()?.course?.courseTrailer || '') | safeUrlPipe" frameborder="0" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      
+      <!-- Video Player (appears when a video is selected) -->
+      <div class="video-player-section card" *ngIf="video() && video()?.vedio?.videourl">
+        <h2>{{ video()?.vedio?.vediotitle }}</h2>
+        <div class="video-container">
+          <iframe [src]="(video()?.vedio?.videourl || '') | safeUrlPipe" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <app-task-details [videoId]="video()?.id"></app-task-details>
+      </div>
+    }
   </div>
-  <div class="video-iframe-container">
-    <iframe
-      [src]="(video()?.vedio?.videourl ?? '') | safeUrlPipe"
-      class="video-iframe"
-      frameborder="0"
-      allowfullscreen
-    ></iframe>
-  </div>
-</div>
-<app-task-details *ngIf="video()!=null && video()?.id!=0" [videoId]="video()?.id"></app-task-details>
-</div>
 </div>

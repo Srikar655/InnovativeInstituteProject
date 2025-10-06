@@ -1,266 +1,230 @@
-/* Container for both Sidebar and Course List */
-.container {
+/*
+============================================
+  DEFINITIVE FIX FOR COURSE DETAILS PAGE
+============================================
+*/
+:host {
+  display: block;
+  background-color: #f0f2f5;
+}
+
+.page-container {
   display: flex;
-  margin: 0px 20px;
+  height: calc(100vh - 90px);
   gap: 30px;
-  padding-top: 10px;
+  padding: 30px;
 }
 
-/* Styling for Sidebar */
-.sidebar {
-  width: 300px;
-  background-color: #f4f4f4;
-  color: #333;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  cursor: pointer;
-  transition: box-shadow 0.3s ease, filter 0.3s ease;
-  filter: blur(5px);
-}
-
-/* Active state for Sidebar */
-.sidebar.active {
-  filter: none;
-}
-
-/* Styling for Course List Section */
-.course-list {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column; /* Stack course, video, and task sections vertically */
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 10px;
-  gap: 30px; /* Add gap between sections */
-}
-
-/* Styling for each course item */
-.course-item {
-  display: flex;
-  flex-direction: row; /* Align course details horizontally */
-  align-items: flex-start;
-  background-color: #f4f4f4;
-  border: 1px solid #ddd;
+/* Universal Card Styling */
+.card {
+  background-color: #ffffff;
   border-radius: 12px;
-  padding: 20px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+  padding: 25px;
   width: 100%;
-  max-width: 1000px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
-  text-align: left;
-  gap: 20px; /* Small gap between the details and thumbnail */
 }
 
-.course-item:hover {
-  transform: scale(1.05);
+/* Themed Scrollbar Styling */
+.main-content, .desktop-sidebar, .course-features {
+  scrollbar-width: thin;
+  scrollbar-color: #bb5050 #f0f2f5;
+}
+.main-content::-webkit-scrollbar, .desktop-sidebar::-webkit-scrollbar, .course-features::-webkit-scrollbar {
+  width: 8px;
+}
+.main-content::-webkit-scrollbar-track, .desktop-sidebar::-webkit-scrollbar-track, .course-features::-webkit-scrollbar-track {
+  background: transparent;
+}
+.main-content::-webkit-scrollbar-thumb, .desktop-sidebar::-webkit-scrollbar-thumb, .course-features::-webkit-scrollbar-thumb {
+  background-color: #c7c7c7;
+  border-radius: 10px;
+}
+.main-content:hover::-webkit-scrollbar-thumb, .desktop-sidebar:hover::-webkit-scrollbar-thumb, .course-features:hover::-webkit-scrollbar-thumb {
+  background-color: #bb5050; 
 }
 
-/* Styling for Course Details */
-.course-id-title {
-  font-size: 1.2rem;
-  color: #333;
+.desktop-sidebar {
+  flex: 0 0 380px; 
+  height: 100%;
+  overflow-y: auto;
+}
+
+.main-content {
+  flex: 1; 
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* ======================================= */
+/* HERO SECTION - SIDE-BY-SIDE LAYOUT      */
+/* ======================================= */
+.course-hero {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: center; /* Better vertical alignment */
+}
+
+.hero-thumbnail {
+  flex: 0 0 45%; /* Set a solid basis of 45% */
+  max-width: 500px; /* And a max-width to keep it sane */
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.hero-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-content {
+  flex: 1 1 auto;
 }
 
 .course-title {
-  font-size: 1.5rem;
-  color: #1a73e8; /* Make the title bright and blue */
-  margin-bottom: 10px; /* Margin between title and price */
-  display: block;
-  font-weight: bold;
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #bb5050; 
+  margin: 0 0 10px 0;
 }
 
 .course-price {
-  font-size: 1.3rem;
-  color: #1a73e8; /* Make the price bright blue to stand out */
-  margin-bottom: 15px;
-  font-weight: 600;
-  display: block;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #f07609; 
+  margin-bottom: 0;
 }
 
 .course-description {
-  font-size: 1rem;
-  color: #777;
-  line-height: 1.5;
-  text-align: left;
+  color: #555;
+  line-height: 1.6;
+  font-size: 1.05rem;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Show only 3 lines of text */
-  line-clamp: 3; /* Standard property for compatibility */
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  max-height: 4.5em; /* Adjust this according to the line height and number of lines */
-  transition: max-height 0.3s ease;
-  margin-bottom: 10px;
-  word-break: break-word; /* Ensure long words wrap */
 }
-
 .course-description.expanded {
   -webkit-line-clamp: unset;
-  line-clamp: unset;
-  max-height: none; /* Remove height restriction when expanded */
 }
-
 .read-more-btn {
-  display: inline-block;
+  background: none; border: none;
+  color: #bb5050; font-weight: bold;
+  cursor: pointer; padding: 0; margin-top: 0;
   font-size: 1rem;
-  color: #1a73e8;
-  cursor: pointer;
-  text-decoration: underline;
-  margin-top: 5px;
 }
 
-
-.course-thumbnail {
-  width: 200px;
-  height: auto;
-  border-radius: 8px;
-  margin-left: auto; /* Align thumbnail to the right */
-  align-self: flex-start; /* Align the image at the top-right */
+/* ================================================== */
+/* FIX: USING CSS GRID FOR PERFECT HEIGHT MATCH       */
+/* ================================================== */
+.about-and-trailer-container {
+  display: grid; /* USE GRID */
+  grid-template-columns: 4fr 5fr; /* Define column ratios (40% / 50%) */
+  gap: 30px;
+  align-items: stretch; /* Default, but explicit */
 }
 
-/* Styling for Video Details */
-.video-details {
-  display: flex; /* This ensures we place content in two columns (left for text, right for iframe) */
-  flex-direction: row; /* Align content side-by-side */
-  width: 100%;
-  background-color: #f4f4f4;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  gap: 20px; /* Space between text content and iframe */
-}
-
-.video-content {
-  flex: 1; /* Allow video content to take the remaining space */
-  padding-right: 20px; /* Small gap between content and iframe */
+.features-card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Align the content neatly */
+  max-height: 400px; /* Constrain the height of the entire row */
 }
 
-/* Styling for the edit and delete buttons */
-.video-header {
+.trailer-card {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+  flex-direction: column;
 }
 
-.video-actions {
-  display: flex;
-  gap: 10px;
+.trailer-card .video-container {
+  flex-grow: 1; /* This will make the video fill the grid cell height */
 }
 
-/* Styling for Edit and Delete Buttons */
-.edit-btn,
-.delete-btn {
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  font-size: 0.9rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.card h3 {
+  font-size: 1.5rem; font-weight: 700; color: #333;
+  margin: 0 0 15px 0; border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 10px;
 }
 
-.edit-btn:hover {
-  background-color: #1465c0;
+.course-features {
+  list-style-type: '✓'; 
+  padding-left: 20px;
+  overflow-y: auto;
+}
+.course-features li {
+  margin-bottom: 10px; padding-left: 10px;
 }
 
-.delete-btn {
-  background-color: #e84141;
+.video-container {
+  position: relative; padding-bottom: 56.25%; 
+  height: 0; overflow: hidden; border-radius: 8px;
+}
+.video-container iframe {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
 }
 
-.delete-btn:hover {
-  background-color: #d43737;
+.video-player-section h2 {
+  font-size: 1.8rem; font-weight: 700; color: #bb5050;
+  margin: 0 0 15px 0;
 }
 
-.video-title {
-  font-size: 1.3rem;
-  color: #1a73e8; /* Bright blue for video title */
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.video-price {
-  font-size: 1.3rem;
-  color: #1a73e8; /* Bright blue for video price */
-  margin-bottom: 15px;
-  font-weight: 600;
-}
-
-.video-description {
-  font-size: 1rem;
-  color: #777;
-  line-height: 1.5;
-  margin-bottom: 20px;
-  overflow-y: auto;  /* Make description scrollable */
-  max-height: 300px; /* Set a max-height for the description area */
-}
-
-.video-iframe-container {
-  flex-shrink: 0; /* Prevent iframe from shrinking */
-  width: 350px; /* Set width of iframe */
-  height: 200px; /* Set height of iframe */
-}
-
-.video-iframe {
-  width: 100%;
-  height: 100%; /* Ensure iframe fills its container */
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slight shadow for iframe */
-  margin-top: 10px; /* Add a small margin to bring it closer to the description */
+.mobile-tabs, .mobile-playlist-container {
+  display: none;
 }
 
 
-/* Responsive Styling for Sidebar and Course List */
+/* =========================================== */
+/* MOBILE & TABLET STYLES (Breakpoint: 1024px) */
+/* =========================================== */
 @media (max-width: 1024px) {
-  .container {
-    flex-direction: column;
+  .page-container {
+    flex-direction: column; height: auto;
+    padding: 10px; gap: 20px;
+  }
+  
+  .desktop-sidebar { display: none; }
+  .main-content { overflow-y: visible; gap: 20px; }
+  
+  .course-hero { flex-direction: column; }
+  .hero-thumbnail { max-width: none; }
+  .hero-thumbnail img { object-fit: contain; }
+  .hero-content { width: 100%; text-align: center; padding-top: 0; }
+
+  .course-title { font-size: 1.8rem; }
+  .course-price { font-size: 1.4rem; }
+
+  /* Revert Grid to block for stacking */
+  .about-and-trailer-container {
+    display: block;
+  }
+  .features-card, .trailer-card {
+    margin-bottom: 20px; /* Add space when stacked */
+  }
+  .features-card {
+    height: auto; 
+    max-height: 250px;
   }
 
-  .sidebar {
-    width: 100%;
-    height: 50vh;
+  /* Mobile Tabs */
+  .mobile-tabs {
+    display: flex; width: 100%; background-color: #fff;
+    border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
-
-  .course-list {
-    flex-direction: column;
-    align-items: center;
+  .mobile-tabs button {
+    flex: 1; padding: 15px; font-size: 1rem;
+    font-weight: bold; color: #555; background: transparent;
+    border: none; border-bottom: 3px solid transparent;
+    cursor: pointer; transition: all 0.3s ease;
   }
-
-  .course-item {
-    width: 90%;
-    max-width: 800px;
-    padding: 20px;
+  .mobile-tabs button.active {
+    color: #bb5050; border-bottom-color: #bb5050;
   }
-
-  .course-thumbnail {
-    width: 100%;
-    height: auto;
-    margin-top: 15px;
-  }
-
-  .video-iframe {
-    width: 100%;
-    height: 200px;
-  }
-}
-
-@media (max-width: 768px) {
-  .course-item {
-    width: 100%;
-  }
-
-  .course-thumbnail {
-    height: 200px;
-  }
-
-  .sidebar-thumbnail {
-    height: 150px;
+  
+  .about-course-container, .mobile-playlist-container { display: none; }
+  .mobile-playlist-container.visible, .about-course-container.visible {
+    display: flex; flex-direction: column; gap: 20px;
   }
 }

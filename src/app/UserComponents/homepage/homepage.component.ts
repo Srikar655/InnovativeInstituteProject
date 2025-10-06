@@ -1,72 +1,86 @@
-import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, QueryList, Signal, ViewChildren } from '@angular/core';
-import { CoursemanageService } from '../../services/coursemanage.service';
+import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren } from '@angular/core';
 import { Course } from '../../models/course';
 import { PopupserviceService } from '../../services/popupservice.service';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NgxSpinnerComponent } from 'ngx-spinner';
+import { CoursesStore } from '../../stores/courses.store';
+import { SearchingComponent } from "../../sharedcomponents/searching/searching.component";
 
 @Component({
   selector: 'app-homepage',
-  imports: [RouterLink,CommonModule],
+  imports: [ CommonModule, SearchingComponent , RouterLink],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
 export class HomepageComponent implements OnInit {
-  service=inject(CoursemanageService);
-  popupservice=inject(PopupserviceService);
-  courses:Signal<Course[]>=this.service.courseSignal;
+  coursesStore = inject(CoursesStore);
+  router = inject(Router);
+  popupservice = inject(PopupserviceService);
+  courses: Signal<Course[]> = this.coursesStore.filteredCourses;
+  isLoading: Signal<boolean> = this.coursesStore.isLoading;
+  isThumnailLoading: Signal<boolean> = this.coursesStore.isThumnailLoading;
+  error: Signal<string | null> = this.coursesStore.error
+  
   @ViewChildren('courseItem') courseElements!: QueryList<ElementRef>;
-  cdRef=inject(ChangeDetectorRef);
-  ngOnInit(): void {
-    this.service.get().subscribe({
-      next:res=>{
-
-      },
-      error:err=>{
-        console.log(err);
-        this.popupservice.sweetUnSuccessAllert("There is problem getting courses.. Plese Try Again");
-      }
-    });
-  }
+  
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  
+  cdRef = inject(ChangeDetectorRef);
   private observer!: IntersectionObserver;
-  
+
+  ngOnInit(): void {
+    this.coursesStore.loadCourses();
+  }
 
   
-    ngAfterViewInit() {
-      this.courseElements.changes.subscribe(()=>{
-        this.setupIntersectionObserver();
-      })
-      this.cdRef.detectChanges();
+  trackByCourseId(index: number, course: Course): number {
+    return course.id;
+  }
+
+  ngAfterViewInit() {
+    this.courseElements.changes.subscribe(() => {
+      this.setupIntersectionObserver();
+    });
+    this.cdRef.detectChanges();
+  }
+  selectCourse(courseId: number) {
+    this.coursesStore.selectCourse(courseId);
+    this.router.navigate(['/course-details']);
+  }
+  setupIntersectionObserver() {
+    if (this.observer) {
+      this.observer.disconnect();
     }
-  
-    setupIntersectionObserver() {
-      if (!this.courseElements) return;
-  
-      const options = {
-        threshold: 0.25,
-        rootMargin: '100px',
-        root: document.querySelector('course-list'),
-      };
-  
-      this.observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const courseElement = entry.target as HTMLElement;
-            const courseId = courseElement.getAttribute('id')?.split('-')[1];
-            if (courseId) {
-              this.loadThumbnail(+courseId);
-              this.observer.unobserve(entry.target);  
-            }
+
+    if (!this.courseElements || !this.scrollContainer) return;
+
+    const options = {
+      root: this.scrollContainer.nativeElement,
+      
+      threshold: 0.1, 
+      rootMargin: '0px 0px 200px 0px' 
+    };
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const courseElement = entry.target as HTMLElement;
+          
+          const courseId = courseElement.dataset['courseId'];
+
+          if (courseId) {
+            this.loadThumbnail(+courseId);
+            console.log(courseId);
+            this.observer.unobserve(entry.target);
           }
-        });
-      }, options);
-      this.courseElements.forEach(element => this.observer.observe(element.nativeElement));
-    }
-  
-    loadThumbnail(courseId: number) {
-      this.service.getCourseThumbnail(courseId).subscribe();
-    }
-  
+        }
+      });
+    }, options);
+    
+    this.courseElements.forEach(element => this.observer.observe(element.nativeElement));
+  }
 
+  loadThumbnail(courseId: number) {
+    this.coursesStore.loadCourseThumbnail(courseId); 
+  }
 }

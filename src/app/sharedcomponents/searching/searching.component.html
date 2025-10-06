@@ -1,0 +1,48 @@
+<!-- The main container handles alignment and positioning -->
+<div class="filter-wrapper">
+
+  <!-- This container holds the primary input controls -->
+  <div class="filter-controls">
+    
+    <!-- Search Bar -->
+    <div class="search-wrapper">
+      <i class="material-icons">search</i>
+      <input 
+        type="text" 
+        placeholder="Search for courses..." 
+        class="search-input"
+        [value]="searchTerm()"
+        (input)="onSearch($event)">
+    </div>
+
+    <!-- Category Dropdown -->
+    <div class="dropdown-wrapper">
+      <button class="dropdown-toggle" (click)="toggleDropdown()">
+        <span>Categories</span>
+        <i class="material-icons">filter_list</i>
+      </button>
+
+      <div class="dropdown-panel" *ngIf="isDropdownOpen">
+        <div 
+          class="dropdown-item" 
+          *ngFor="let category of allCategories()" 
+          (click)="toggleCategory(category)">
+          <input 
+            type="checkbox" 
+            [checked]="isCategorySelected(category)"
+            aria-label="Select category">
+          <label>{{ category.category }}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- This container displays the selected categories as pills/hashtags -->
+  <div class="selected-categories-container" *ngIf="selectedCategories().length > 0">
+    <div class="category-pill" *ngFor="let category of selectedCategories()">
+      <span>{{ category.category }}</span>
+      <button class="remove-pill" (click)="toggleCategory(category)" aria-label="Remove category">&times;</button>
+    </div>
+  </div>
+
+</div>

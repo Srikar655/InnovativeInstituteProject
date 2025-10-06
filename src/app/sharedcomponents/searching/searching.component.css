@@ -1,0 +1,193 @@
+/*
+============================================
+  SEARCHING & FILTERING COMPONENT STYLES
+============================================
+*/
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.filter-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Aligns items to the right on desktop */
+  gap: 20px;
+  padding: 0 40px 30px 40px; /* Matches your .scroll-container padding */
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  justify-content: flex-end; /* Pushes content to the right */
+}
+
+/* Search Bar Styling */
+.search-wrapper {
+  position: relative;
+  flex-grow: 1; /* Allows it to take available space */
+  max-width: 400px; /* Prevents it from getting too large */
+}
+.search-wrapper .material-icons {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+.search-input {
+  width: 100%;
+  height: 48px;
+  padding: 12px 20px 12px 50px; /* Space for icon */
+  border: 1px solid #ccc;
+  border-radius: 24px; /* Pill shape */
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+.search-input:focus {
+  border-color: #bb5050;
+  box-shadow: 0 0 0 3px rgba(187, 80, 80, 0.15);
+}
+
+/* Dropdown Styling */
+.dropdown-wrapper {
+  position: relative;
+}
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 24px;
+  background-color: #bb5050; /* Theme color */
+  color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.dropdown-toggle:hover {
+  background-color: #a04444;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 100;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  width: 280px;
+  max-height: 300px;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease-out;
+}
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none; /* Prevents text selection on click */
+}
+.dropdown-item:hover {
+  background-color: #f7f7f7;
+}
+.dropdown-item label {
+  cursor: pointer;
+  flex-grow: 1;
+  color: #333;
+}
+.dropdown-item input[type="checkbox"] {
+  accent-color: #bb5050;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Selected Category Pills Styling */
+.selected-categories-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns to the right */
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+}
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e9ecef;
+  color: #343a40;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: popIn 0.3s ease;
+}
+.remove-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: #adb5bd;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.remove-pill:hover {
+  background-color: #bb5050;
+  transform: scale(1.1);
+}
+
+/* Simple Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/*
+============================================
+  RESPONSIVENESS FOR FILTERING
+============================================
+*/
+@media (max-width: 768px) {
+  .filter-wrapper {
+    align-items: center; /* Center aligns everything on mobile */
+    padding: 0 20px 20px 20px;
+  }
+  .filter-controls {
+    flex-direction: column; /* Stack items vertically */
+    width: 100%;
+  }
+  .search-wrapper, .dropdown-wrapper {
+    width: 100%;
+    max-width: 450px;
+  }
+  .dropdown-toggle {
+    width: 100%;
+    justify-content: center;
+  }
+  .selected-categories-container {
+    justify-content: center; /* Center the pills on mobile */
+  }
+}

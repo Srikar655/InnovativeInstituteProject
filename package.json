@@ -20,6 +20,8 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
+    "@ngrx/signals": "^19.2.1",
+    "@ngrx/store": "^19.2.1",
     "@stomp/stompjs": "^7.1.1",
     "@tailwindcss/postcss": "^4.0.17",
     "bootstrap": "^5.3.3",

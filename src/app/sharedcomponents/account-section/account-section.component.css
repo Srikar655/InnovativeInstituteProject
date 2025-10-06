@@ -1,0 +1,226 @@
+/*
+============================================
+  ACCOUNT SECTION STYLING (FINAL)
+============================================
+*/
+
+:host {
+  display: flex;
+  align-items: center;
+}
+
+.account-container {
+  position: relative;
+  margin-left: 16px; /* A little less margin is fine */
+}
+
+/*
+  PROFILE BUTTON
+*/
+.profile-button {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 2px solid #ffffff;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.profile-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.profile-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-button .material-icons {
+  font-size: 52px;
+  color: #bb5050;
+}
+
+/*
+  ACCOUNT PANEL (Slide-out menu)
+*/
+.account-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 340px;
+  height: 100%;
+  background-color: #ffffff;
+  box-shadow: -6px 0 30px rgba(0, 0, 0, 0.15);
+  z-index: 1100;
+  /* An improved transition for a smoother feel */
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  color: #343a40;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-panel.open {
+  transform: translateX(0); /* Slides the panel into view */
+}
+
+/* Backdrop for focus */
+.panel-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1050;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+
+.panel-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* Panel Header */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 36px;
+  line-height: 1;
+  cursor: pointer;
+  color: #ced4da;
+  transition: color 0.2s ease, transform 0.3s ease;
+}
+
+.close-button:hover {
+  color: #bb5050;
+  transform: rotate(90deg);
+}
+
+/* Panel Body */
+.panel-body {
+  padding: 24px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.profile-summary {
+  text-align: center;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.profile-picture-large {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.profile-picture-large img, .profile-picture-large .material-icons {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  color: #bb5050;
+}
+
+.user-name {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.user-email {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+  word-break: break-all;
+}
+
+/* User details (phone, roles) */
+.user-details {
+  margin: 16px 0;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  font-size: 16px;
+}
+.detail-item:not(:last-child) {
+  border-bottom: 1px solid #f1f3f5;
+}
+.detail-item .material-icons {
+  color: #bb5050;
+}
+.user-roles {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.role-badge {
+  background-color: #f0f2f5; color: #495057;
+  padding: 4px 10px; border-radius: 12px; font-size: 12px;
+}
+
+/* Logout Button */
+.logout-button {
+  margin-top: auto; padding: 16px; width: 100%;
+  background-color: #bb5050; color: white;
+  border: none; border-radius: 8px; font-size: 16px;
+  font-weight: 600; cursor: pointer; display: flex;
+  align-items: center; justify-content: center; gap: 12px;
+  transition: background-color 0.3s ease;
+}
+.logout-button:hover {
+  background-color: #a04444;
+}
+
+/*
+============================================
+  MOBILE RESPONSIVENESS
+============================================
+*/
+@media (max-width: 600px) {
+  .account-panel {
+    /* Make the panel take up most of the screen width */
+    width: 90vw;
+    max-width: 320px; /* But not more than 320px */
+  }
+
+  .profile-button {
+    width: 44px;
+    height: 44px;
+  }
+  .profile-button .material-icons {
+    font-size: 44px;
+  }
+}

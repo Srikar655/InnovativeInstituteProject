@@ -25,6 +25,14 @@ throw new Error('Method not implemented.');
   service2=inject(CoursemanageService);
   course=signal<Usercourse|null>(null);
   video=model<UserVideos | undefined>();
+  isDescriptionExpanded = false;
+  activeMobileTab: 'playlist' | 'about' = 'playlist';
+  setActiveTab(tab: 'playlist' | 'about'): void {
+    this.activeMobileTab = tab;
+  }
+  toggleDescription(): void {
+    this.isDescriptionExpanded = !this.isDescriptionExpanded;
+  }
   ngOnInit(): void {
     this.courseId=Number(this.router.snapshot.paramMap.get('id'));
     this.service1.getUserCourse(this.courseId).subscribe({
@@ -44,18 +52,6 @@ throw new Error('Method not implemented.');
         console.log(err);
       }
     });
-  }
-   toggleDescription() {
-    const description = document.getElementById('course-description');
-    const readMoreBtn = document.getElementById('read-more-btn');
-    
-    if (description?.style.maxHeight === 'none') {
-      description.style.maxHeight = '200px';
-      readMoreBtn!.textContent = 'Read More';
-    } else {
-      description!.style.maxHeight = 'none';
-      readMoreBtn!.textContent = 'Read Less';
-    }
   }
   redirectToPaymentGateWay()
   {
