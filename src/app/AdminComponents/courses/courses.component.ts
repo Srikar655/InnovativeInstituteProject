@@ -1,89 +1,115 @@
-import { Component, ElementRef, AfterViewInit, ViewChildren, QueryList, inject, OnInit, Signal, ChangeDetectorRef } from '@angular/core';
-import { CoursemanageService } from '../../services/coursemanage.service';
-import { Course } from '../../models/course';
-import { RouterLink } from '@angular/router';
+import { Component, ElementRef, inject, OnInit, OnDestroy, AfterViewInit, ViewChildren, Signal, QueryList, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime, startWith, takeUntil } from 'rxjs/operators';
+
+// --- Reusable Components ---
+import { Course } from '../../models/course';
+import { CoursesStore } from '../../stores/courses.store';
+import { SearchingComponent } from "../../sharedcomponents/searching/searching.component";
+import { ErrorMessageComponent } from "../../sharedcomponents/error-message/error-message.component";
+import { NothingFoundComponent } from "../../sharedcomponents/nothing-found/nothing-found.component";
+import { LoadingComponent } from "../../sharedcomponents/loading/loading.component";
+import { CourseCardComponent } from "../../sharedcomponents/course-card/course-card.component";
 import { PopupserviceService } from '../../services/popupservice.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-courses',
-  imports: [RouterLink, CommonModule],
+  selector: 'app-courses', 
+  imports: [CommonModule, SearchingComponent, ErrorMessageComponent, NothingFoundComponent, LoadingComponent, CourseCardComponent],
   templateUrl: './courses.component.html',
   styleUrl: './courses.component.css'
 })
-export class CoursesComponent implements OnInit, AfterViewInit {
+export class CoursesComponent implements OnInit, AfterViewInit, OnDestroy {
+  coursesStore = inject(CoursesStore);
+  popupservice = inject(PopupserviceService);
+  notficationService = inject(NotificationService);
+
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
 
-  service = inject(CoursemanageService);
-  courseSignal = this.service.courseSignal;
+  @ViewChildren('loadingTrigger') loadingTriggers!: QueryList<ElementRef>;
+
   private observer!: IntersectionObserver;
+  private destroy$ = new Subject<void>();
 
-  @ViewChildren('courseItem') courseElements!: QueryList<ElementRef>;
-  cdRef=inject(ChangeDetectorRef);
-  popupservice=inject(PopupserviceService);
   ngOnInit(): void {
-    console.log("Courses component initialized");
-    this.service.get().subscribe({
-      error:(error:any)=>
-      {
-        console.log(error);
-        this.popupservice.sweetUnSuccessAllert("There Is An Issue With Fetching Courses Please Try Again")
+  }
+
+  ngAfterViewInit(): void {
+    this.loadingTriggers.changes.subscribe((triggers: QueryList<ElementRef>) => {
+      if (triggers.first) {
+        this.setupIntersectionObserver(triggers.first);
       }
-    }); // Fetch courses first, without thumbnails
+    });
+
+    fromEvent(window, 'resize').pipe(
+      startWith(null), 
+      debounceTime(200), 
+      takeUntil(this.destroy$) 
+    ).subscribe(() => {
+      this.calculateAndSetPageSize();
+    });
   }
 
-  ngAfterViewInit() {
-    this.courseElements.changes.subscribe(()=>{
-      this.setupIntersectionObserver();
-    })
-    this.cdRef.detectChanges();
+  async onDeleteCourse(courseId: number): Promise<void> {
+    const {isConfirmed} = await this.popupservice.sweetConfirmationAlert('Are you sure you want to delete this course?');
+    console.log(isConfirmed);
+    if (!isConfirmed) return;
+    try{
+      await this.coursesStore.deleteCourse(courseId);
+      this.notficationService.showSuccess("Course deleted successfully.");
+      
+    }
+    catch(err:any){      
+      this.notficationService.showError( "Failed to delete course Please Try Again...");
+    }
+    
+    
+  }
+  
+  onReload(): void {
+    this.coursesStore.resetAndLoad();
   }
 
-  setupIntersectionObserver() {
-    if (!this.courseElements) return;
+  calculateAndSetPageSize(): void {
+    if (!this.scrollContainer) return;
 
-    const options = {
-      threshold: 0.25,
-      rootMargin: '100px',
-      root: document.querySelector('course-list'),
-    };
+    const cardWidthWithGap = 320 + 30;
+    const containerWidth = this.scrollContainer.nativeElement.clientWidth;
+    const containerHeight = this.scrollContainer.nativeElement.clientHeight;
 
+    if (containerWidth === 0 || containerHeight === 0) {
+      this.coursesStore.setPageSize(10);
+      return;
+    }
+    
+    const columns = Math.max(1, Math.floor(containerWidth / cardWidthWithGap));
+    const cardHeightWithGap = (320 * (9 / 16)) + 150;
+    const rows = Math.max(1, Math.ceil(containerHeight / cardHeightWithGap));
+    const pageSize = (columns * rows) + columns;
+    const finalPageSize = Math.max(6, Math.min(pageSize, 50));
+    
+    this.coursesStore.setPageSize(finalPageSize);
+  }
+
+  setupIntersectionObserver(triggerElement: ElementRef): void {
+    if (this.observer) this.observer.disconnect();
+    const options = { root: null, threshold: 0.5 };
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const courseElement = entry.target as HTMLElement;
-          const courseId = courseElement.getAttribute('id')?.split('-')[1];
-          if (courseId) {
-            this.loadThumbnail(+courseId);
-            this.observer.unobserve(entry.target);  
-          }
+        if (entry.isIntersecting && !this.coursesStore.isLoadingNextPage()) {
+          this.coursesStore.loadNextPage();
         }
       });
     }, options);
-    this.courseElements.forEach(element => this.observer.observe(element.nativeElement));
+    this.observer.observe(triggerElement.nativeElement);
   }
 
-  loadThumbnail(courseId: number) {
-    this.service.getCourseThumbnail(courseId).subscribe();
+  ngOnDestroy(): void {
+    if (this.observer) this.observer.disconnect();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
-
-  deleteCourse(id: number,$event: MouseEvent) {
-    if($event.isTrusted)
-    {
-      this.service.deleteCourse(id).subscribe(
-        {
-          next: (res: any) => {
-            this.popupservice.sweetSuccessAllert("Course Deleted Successfully");
-          },
-          error: (error: any) => {
-            console.log(error);
-            this.popupservice.sweetUnSuccessAllert("There Is An Issue With Deleting Course Please Try Again")
-          }
-        }
-      );
-    }
-  }
-    
-
-  
 }

@@ -1,55 +1,34 @@
-<ngx-spinner>
-  <div class="terminal-loader">
-    <div class="terminal-header">
-      <div class="terminal-title">Status</div>
-      <div class="terminal-controls">
-        <div class="control close"></div>
-        <div class="control minimize"></div>
-        <div class="control maximize"></div>
-      </div>
-    </div>
-    <div class="text">Loading...</div>
-  </div>
-</ngx-spinner>
+<header class="app-toolbar">
 
-<nav class="navbar">
-  <div class="logo" (click)="navigateToCourses()">
-    <h2>My Dashboard</h2>
-  </div>
-  <ul class="nav-links">
-    <li>
-      <a routerLink="/adminHomePage/courses" routerLinkActive="active">Courses</a>
-    </li>
-    <li>
-      <a routerLink="/adminHomePage/addcourses" routerLinkActive="active">AddCourse</a>
-    </li>
-    <li class="notification-item">
-      <a routerLink="/adminHomePage/user-tasksolution-info" routerLinkActive="active">
-        User Task Solutions Info
-        <span class="notification-badge" *ngIf="notificationCount > 0">
-          {{ notificationCount }}
-        </span>
-      </a>
-    </li>
-    <li>
-      <a routerLink="/" routerLinkActive="active">GO TO USER SIDE</a>
-    </li>
-  </ul>
-</nav>
+  <a class="logo-area" routerLink="/dashboard">
+    <i class="material-icons logo-icon">code</i>
+    <h1 class="toolbar-title">My Dashboard</h1>
+  </a>
 
-<div class="toast-container position-fixed bottom-0 end-0 p-3" *ngIf="notifications?.length">
-  <div *ngFor="let note of notifications" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <img src="assets/logo.png" class="rounded me-2" alt="..." style="width: 20px; height: 20px;">
-      <strong class="me-auto">Task Update</strong>
-      <small class="text-muted">just now</small>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" (click)="removeNotification(note)"></button>
-    </div>
-    <div class="toast-body">
-      {{ note.message }}
-    </div>
-  </div>
-</div>
+  <span class="toolbar-spacer"></span>
+   @if(isLoggedIn$ | async)
+   {
+     
+    <a class="nav-link" routerLink="/adminHomePage/courses" routerLinkActive="active-link">
+      <i class="material-icons">menu_book</i>
+      <span>Courses</span>
+    </a>
+    <a class="nav-link" routerLink="/adminHomePage/addcourses" routerLinkActive="active-link">
+      <i class="material-icons">add_circle</i>
+      <span>Add Courses</span>
+    </a>
+    <button class="notification-button">
+      <i class="material-icons">notifications</i>
+    </button>
+    <app-account-section></app-account-section>
+  }
+  @else {
+    <app-login></app-login>
+  }
 
-<!-- Main routing area -->
-<router-outlet></router-outlet>
+</header>
+
+<!-- Main content area for the router outlet -->
+<main class="router-content">
+  <router-outlet></router-outlet>
+</main>

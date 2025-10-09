@@ -1,7 +1,6 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { NgxSpinnerComponent } from 'ngx-spinner';
 import { WebsocketService } from '../../services/websocket.service';
 import { Observable } from 'rxjs';
 import { OauthService } from '../../services/oauth.service';
@@ -10,12 +9,12 @@ import { AccountSectionComponent } from "../../sharedcomponents/account-section/
 
 @Component({
   selector: 'app-user-home-page',
-  imports: [RouterOutlet, CommonModule, NgxSpinnerComponent, RouterLink, AsyncPipe, LoginComponent, AccountSectionComponent],
+  imports: [RouterOutlet, CommonModule, RouterLink, AsyncPipe, LoginComponent, AccountSectionComponent],
   templateUrl: './user-home-page.component.html',
   styleUrl: './user-home-page.component.css'
 })
 export class UserHomePageComponent {
-router=inject(Router);
+  router=inject(Router);
   websocketservice=inject(WebsocketService);
   oauthService=inject(OauthService);
   isAdmin$:Observable<boolean>=this.oauthService.isAdmin$;
@@ -28,11 +27,6 @@ router=inject(Router);
   notifications:any = [];
   notificationCount = 0;
 
-  
-  navigateToCourses()
-  {
-    this.router.navigate(['/usercourses']);
-  }
   ngOnInit() {
     this.isAdmin$=this.oauthService.isAdmin$;
     // this.websocketservice.getNotifications().subscribe((message: any) => {

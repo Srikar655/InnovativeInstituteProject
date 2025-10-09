@@ -22,8 +22,7 @@ const initialState: CourseCategoryState = {
 export const CourseCategoryStore = signalStore(
     { providedIn: 'root' },
     withState(initialState),
-    withMethods((state) => {
-        const courseService = inject(CoursemanageService);
+    withMethods((state , courseService=inject(CoursemanageService)) => {
         return {
             async addCategory(category: any): Promise<void> {
                 patchState(state, { isLoading: true, error: null, successMessage: null });
@@ -40,9 +39,9 @@ export const CourseCategoryStore = signalStore(
                 }
             },
 
-            async loadCategories(): Promise<void> {
-                // Prevent re-fetching if categories are already loaded
-                if(state.courseCategories().length > 0) return;
+            async loadCategories(): Promise<void> 
+            {
+                if(state.courseCategories().length > 0 || state.isLoading()) return;
                 patchState(state, { isLoading: true, error: null });
                 try {
                     const categories = await firstValueFrom(courseService.getCategories());
@@ -52,20 +51,15 @@ export const CourseCategoryStore = signalStore(
                     patchState(state, { isLoading: false, error });
                 }
             },
-
             toggleCategory(category: any): void {
                 const selected = state.selectedCategories();
                 const isSelected = selected.some(c => c.id === category.id);
                 
-                if (isSelected) {
-                    patchState(state, {
-                        selectedCategories: selected.filter(c => c.id !== category.id)
-                    });
-                } else {
-                    patchState(state, {
-                        selectedCategories: [...selected, category]
-                    });
-                }
+                const newSelected = isSelected
+                    ? selected.filter(c => c.id !== category.id)
+                    : [...selected, category];
+                
+                patchState(state, { selectedCategories: newSelected });
             },
             
             resetState() {

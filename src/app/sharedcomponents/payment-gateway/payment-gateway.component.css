@@ -1,0 +1,28 @@
+.unlock-button {
+  display: flex; /* Use flexbox for icon and text alignment */
+  align-items: center; /* Center items vertically */
+  gap: 5px; /* Space between icon and text */
+  padding: 8px 15px; /* Padding inside the button */
+  border: 1px solid #e0e0e0; /* Subtle border */
+  border-radius: 6px; /* Slightly rounded corners */
+  background-color: #ffffff; /* White background */
+  color: #333; /* Darker text color */
+  font-weight: 600; /* Semi-bold text */
+  font-size: 0.95rem; /* Font size */
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  margin-left: auto; /* Pushes the button to the far right within its flex container */
+  flex-shrink: 0; /* Prevents the button from shrinking */
+}
+
+.unlock-button:hover {
+  background-color: #f0f0f0; /* Slight change on hover */
+  border-color: #c0c0c0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.lock-icon {
+  font-size: 1.1rem; /* Adjust icon size */
+  line-height: 1; /* Ensures icon is vertically aligned */
+  margin-top: -2px; /* Small adjustment for better visual alignment */
+}

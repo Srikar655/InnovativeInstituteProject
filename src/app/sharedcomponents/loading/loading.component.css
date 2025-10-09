@@ -1,0 +1,45 @@
+/*
+  This ensures the spinner doesn't cause a layout shift while loading.
+  It will sit nicely at the bottom of the course list.
+*/
+:host {
+  display: block;
+  width: 100%;
+  padding: 40px 0;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #bb5050; /* Your primary theme red */
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+/*
+  This creates a staggered animation effect. The second dot's
+  animation is delayed slightly, and the third's is delayed even more.
+*/
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+/* The bouncing animation keyframes */
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1.0);
+  }
+}

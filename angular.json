@@ -29,8 +29,8 @@
             "styles": [
               "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "@angular/material/prebuilt-themes/azure-blue.css",
-              "node_modules/ngx-spinner/animations/ball-scale-ripple.css"
+              "node_modules/ngx-spinner/animations/ball-scale-ripple.css",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": [],
             "webWorkerTsConfig": "tsconfig.worker.json"
@@ -89,9 +89,7 @@
               }
             ],
             "styles": [
-              "src/styles.css",
-              "@angular/material/prebuilt-themes/azure-blue.css"
-              
+              "src/styles.css"              
             ],
             "scripts": [],
             "webWorkerTsConfig": "tsconfig.worker.json"

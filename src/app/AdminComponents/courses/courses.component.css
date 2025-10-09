@@ -1,121 +1,65 @@
+/*
+================================================================
+  BASE LAYOUT & SCROLL CONTAINER
+  (This is now identical to the user homepage for a consistent look)
+================================================================
+*/
+.homepage-layout {
+  display: flex;
+  flex-direction: column;
+  /* Adjust height if your admin navbar is different */
+  height: calc(100vh - 90px);
+  background-color: #f8f9fa;
+}
+.filter-area {
+  flex-shrink: 0;
+  padding: 20px 40px;
+  position: relative;
+  z-index: 10;
+}
+.scroll-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 40px 40px 40px;
+}
+.scroll-container::-webkit-scrollbar { width: 8px; }
+.scroll-container::-webkit-scrollbar-track { background: transparent; }
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 20px;
+}
+.scroll-container:hover::-webkit-scrollbar-thumb {
+  background-color: #bb5050;
+}
+
+/*
+================================================================
+  THE ROBUST & RESPONSIVE COURSE LIST CONTAINER
+  (This is the key fix - using the same responsive grid as the user page)
+================================================================
+*/
 .course-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Adjust number of columns */
-    gap: 20px; /* Space between courses */
-    justify-items: center; /* Center items in the grid */
-    padding: 20px;
-  }
-  
-  .course-item {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-    width: 100%;
-    max-width: 440px; /* Adjust to match the image size */
-    text-align: center;
-    overflow: hidden;
-    height: auto;
-  }
-  
-  .course-item:hover {
-    transform: translateY(-5px);
-  }
-  
-  .course-link {
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  .course-thumbnail {
-    height: 200px; /* Adjust as needed */
-    background-color: #f1f1f1;
-    overflow: hidden;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-  }
-  
-  .course-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px 10px 0 0;
-  }
-  
-  .course-info {
-    padding: 15px;
-  }
-  
-  .course-info h3 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    font-weight: 600;
-  }
-  
-  .course-info p.course-price {
-    color: #ff784b;
-    font-size: 1em;
-    font-weight: 600;
-  }
-  .course-actions {
-    display: none;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    gap: 10px; /* Space between the buttons */
-  }
-  
-  .course-item {
-    position: relative; /* So the absolute buttons can be positioned */
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-    width: 100%;
-    max-width: 440px;
-    text-align: center;
-    overflow: hidden;
-  }
-  
-  .course-item:hover .course-actions {
-    display: flex;
-  }
-  
-  .edit-button,
-  .delete-button {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.2em;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+  padding-top: 20px;
+}
+
+/*
+  REMOVED: All old `.course-item`, `.delete-button`, etc. rules.
+  They are no longer needed here as they live in the reusable
+  `course-card.component.css` file.
+*/
+
+/*
+================================================================
+  MOBILE RESPONSIVENESS (Layout Only)
+================================================================
+*/
+@media (max-width: 767px) {
+  .filter-area, .scroll-container { padding-left: 20px; padding-right: 20px; }
+  .course-list {
+    gap: 20px;
     justify-content: center;
-    transition: background 0.2s ease;
   }
-  
-  .edit-button {
-    background-color: #4caf50; /* Green for Edit */
-  }
-  
-  .delete-button {
-    background-color: #f44336; /* Red for Delete */
-  }
-  
-  .edit-button:hover {
-    background-color: #45a049;
-  }
-  
-  .delete-button:hover {
-    background-color: #e53935;
-  }
-  
+}

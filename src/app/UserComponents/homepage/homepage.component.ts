@@ -1,86 +1,117 @@
-import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren } from '@angular/core';
-import { Course } from '../../models/course';
-import { PopupserviceService } from '../../services/popupservice.service';
-import { Router, RouterLink } from '@angular/router';
+import { Component, ElementRef, inject, OnInit, OnDestroy, AfterViewInit, ViewChildren, Signal, QueryList, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime, startWith, takeUntil } from 'rxjs/operators';
+
+import { Course } from '../../models/course';
 import { CoursesStore } from '../../stores/courses.store';
 import { SearchingComponent } from "../../sharedcomponents/searching/searching.component";
+import { ErrorMessageComponent } from "../../sharedcomponents/error-message/error-message.component";
+import { NothingFoundComponent } from "../../sharedcomponents/nothing-found/nothing-found.component";
+import { LoadingComponent } from "../../sharedcomponents/loading/loading.component";
+import { CourseCardComponent } from "../../sharedcomponents/course-card/course-card.component";
 
 @Component({
   selector: 'app-homepage',
-  imports: [ CommonModule, SearchingComponent , RouterLink],
+  imports: [CommonModule, SearchingComponent, ErrorMessageComponent, NothingFoundComponent, LoadingComponent, CourseCardComponent],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
-export class HomepageComponent implements OnInit {
+export class HomepageComponent implements OnInit, AfterViewInit, OnDestroy {
   coursesStore = inject(CoursesStore);
-  router = inject(Router);
-  popupservice = inject(PopupserviceService);
-  courses: Signal<Course[]> = this.coursesStore.filteredCourses;
-  isLoading: Signal<boolean> = this.coursesStore.isLoading;
-  isThumnailLoading: Signal<boolean> = this.coursesStore.isThumnailLoading;
-  error: Signal<string | null> = this.coursesStore.error
-  
-  @ViewChildren('courseItem') courseElements!: QueryList<ElementRef>;
-  
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  
-  cdRef = inject(ChangeDetectorRef);
+
+
+
+  @ViewChildren('loadingTrigger') loadingTriggers!: QueryList<ElementRef>;
+
   private observer!: IntersectionObserver;
+  private destroy$ = new Subject<void>();
+
+  longPressTimer: any;
+  isLongPressing = false;
 
   ngOnInit(): void {
-    this.coursesStore.loadCourses();
+    //this.setupResponsivePageSize();
   }
 
-  
+  ngAfterViewInit(): void {
+    this.loadingTriggers.changes.subscribe((triggers: QueryList<ElementRef>) => {
+      if (triggers.first) {
+        this.setupIntersectionObserver(triggers.first);
+      }
+    });
+
+
+    fromEvent(window, 'resize').pipe(
+      startWith(null), 
+      debounceTime(200), 
+      takeUntil(this.destroy$) 
+    ).subscribe(() => {
+      this.calculateAndSetPageSize();
+    });
+  }
+
+  onReload()
+  {
+    this.coursesStore.resetAndLoad();
+  }
+
+  calculateAndSetPageSize(): void {
+
+    const cardWidthWithGap = 320 + 30; 
+    
+    const containerWidth = this.scrollContainer.nativeElement.clientWidth;
+    const containerHeight = this.scrollContainer.nativeElement.clientHeight;
+
+    if (containerWidth === 0 || containerHeight === 0) {
+
+      this.coursesStore.setPageSize(10);
+      return;
+    }
+    
+
+    const columns = Math.floor(containerWidth / cardWidthWithGap);
+
+    const cardHeightWithGap = (320 * (9 / 16)) + 150; 
+    const rows = Math.ceil(containerHeight / cardHeightWithGap);
+    
+
+    const pageSize = (columns * rows) + columns;
+
+
+    const finalPageSize = Math.max(6, Math.min(pageSize, 50));
+    
+    console.log(`Viewport: ${containerWidth}x${containerHeight}, Columns: ${columns}, Rows: ${rows}, Calculated PageSize: ${finalPageSize}`);
+    
+    this.coursesStore.setPageSize(finalPageSize);
+  }
+
+  setupIntersectionObserver(triggerElement: ElementRef): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+    const options = { root: null, threshold: 0.5 };
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !this.coursesStore.isLoadingNextPage()) {
+          this.coursesStore.loadNextPage();
+        }
+      });
+    }, options);
+    this.observer.observe(triggerElement.nativeElement);
+  }
+
   trackByCourseId(index: number, course: Course): number {
     return course.id;
   }
 
-  ngAfterViewInit() {
-    this.courseElements.changes.subscribe(() => {
-      this.setupIntersectionObserver();
-    });
-    this.cdRef.detectChanges();
-  }
-  selectCourse(courseId: number) {
-    this.coursesStore.selectCourse(courseId);
-    this.router.navigate(['/course-details']);
-  }
-  setupIntersectionObserver() {
+  ngOnDestroy(): void {
     if (this.observer) {
       this.observer.disconnect();
     }
-
-    if (!this.courseElements || !this.scrollContainer) return;
-
-    const options = {
-      root: this.scrollContainer.nativeElement,
-      
-      threshold: 0.1, 
-      rootMargin: '0px 0px 200px 0px' 
-    };
-
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const courseElement = entry.target as HTMLElement;
-          
-          const courseId = courseElement.dataset['courseId'];
-
-          if (courseId) {
-            this.loadThumbnail(+courseId);
-            console.log(courseId);
-            this.observer.unobserve(entry.target);
-          }
-        }
-      });
-    }, options);
-    
-    this.courseElements.forEach(element => this.observer.observe(element.nativeElement));
-  }
-
-  loadThumbnail(courseId: number) {
-    this.coursesStore.loadCourseThumbnail(courseId); 
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

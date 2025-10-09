@@ -8,6 +8,7 @@ import { SafeUrlPipePipe } from "../../pipes/safe-url-pipe.pipe";
 import { VideosDisplayComponent } from "../videos-display/videos-display.component";
 import { UserVideos } from '../../models/user-videos';
 import { TaskDetailsComponent } from "../task-details/task-details.component";
+import { UserCoursesStore } from '../../stores/usercourses.store';
 
 @Component({
   selector: 'app-coursedetails',
@@ -16,14 +17,13 @@ import { TaskDetailsComponent } from "../task-details/task-details.component";
   styleUrl: './coursedetails.component.css'
 })
 export class CoursedetailsComponent implements OnInit {
-editVideo($event: MouseEvent,arg1: UserVideos|undefined) {
-throw new Error('Method not implemented.');
-}
+
   router=inject(ActivatedRoute);
+  userCourseStore = inject(UserCoursesStore);
   courseId:number=0;
-  service1=inject(UserCourseService);
-  service2=inject(CoursemanageService);
-  course=signal<Usercourse|null>(null);
+  course=this.userCourseStore.selectedUserCourse;
+  isLoading=this.userCourseStore.isLoading;
+  error=this.userCourseStore.error;
   video=model<UserVideos | undefined>();
   isDescriptionExpanded = false;
   activeMobileTab: 'playlist' | 'about' = 'playlist';
@@ -35,65 +35,7 @@ throw new Error('Method not implemented.');
   }
   ngOnInit(): void {
     this.courseId=Number(this.router.snapshot.paramMap.get('id'));
-    this.service1.getUserCourse(this.courseId).subscribe({
-      next:res=>{
-        this.course.set(res as Usercourse);
-        this.service2.getCourseThumbnail(this.courseId).subscribe({
-          next:res=>
-          {
-              if (this.course()) {
-                this.course()!.course.coursethumbnail = res.coursethumbnail as Uint8Array;
-              }
-          }
-        });
-
-      },
-      error:err=>{
-        console.log(err);
-      }
-    });
-  }
-  redirectToPaymentGateWay()
-  {
-    this.service1.payment(this.course()?.course.id).subscribe({
-      next:(res:any)=>
-      {
-        const componet=this;
-        const options: any = {
-          "key": "rzp_test_PafRro48qAcsSh", // Razorpay Key ID from Razorpay dashboard
-          "amount": res.amount * 100, // Amount in paise
-          "currency": "INR",
-          "name": "Innovative Tutorials",
-          "description": "Test Transaction",
-          "order_id": res.orderId, // Pass the order ID from backend
-          "handler": function (response: any) {
-            const paymentDetails={
-              orderId:options.order_id,
-              paymentId:response.razorpay_payment_id,
-              signature:response.razorpay_signature,
-            };
-            console.log(response);
-            componet.service1.verifypayment(paymentDetails).subscribe({
-              next:(res:any)=>{
-                componet.course.set(res.UserCourse as Usercourse);  
-              },
-              error:(err:any)=>
-              {
-                console.log(err);
-              }
-            })
-          },
-          "theme": {
-            "color": "#3399cc"
-          }
-        };
-        var razorpay=new (window as any).Razorpay(options);
-        razorpay.open();
-      },
-      error:err=>{
-        console.log(err);
-      }
-    });
+    this.userCourseStore.selectCourse(this.courseId);
   }
 }
 

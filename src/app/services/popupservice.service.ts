@@ -30,4 +30,23 @@ export class PopupserviceService {
       text: arg0,
     });
   }
+
+  sweetConfirmationAlert(arg0:string)
+  {
+   return Swal.fire({
+      icon: 'warning',
+      title: 'Alert',
+      text: arg0,
+      showCloseButton: true,
+      showConfirmButton: true,
+      //timer: 3000,  
+      backdrop: `rgba(0, 123, 255, 0.4)`,
+      didOpen: () => {
+        const content = Swal.getHtmlContainer();
+        if (content) {
+          content.style.animation = 'fadeInUp 0.8s';  
+        }
+      }
+    }); 
+  }
 }

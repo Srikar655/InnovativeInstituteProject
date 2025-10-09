@@ -1,41 +1,37 @@
-<div class="sidebar-container">
-    <div class="infinite-scroll-container">
+<!-- video-component.html -->
+<div class="sidebar-container custom-scrollbar"> <!-- Added custom-scrollbar for the container -->
+    <div class="infinite-scroll-container custom-scrollbar"> <!-- Added custom-scrollbar -->
+      <!-- Removed sidebar-header and add-video-btn as per design -->
       <div class="sidebar-header">
-        <h2>Video Sidebar</h2>
+        <h2>Course Playlist</h2>
       </div>
       <div hidden>{{loadVideos()}}</div>
-      <div class="sidebar">
-        <div class="sidebar-item" *ngFor="let uservideo of videos(); let i = index"
+      <div class="playlist-list"> <!-- Changed to playlist-list for better semantics -->
+        <div class="playlist-item" *ngFor="let uservideo of videos(); let i = index"
              (click)="onVideoSelect(i)"
-             #scrollContainer>
-             @if(uservideo.accessStatus === 'UNLOCKED')
-             {
-              @if(uservideo.paymentStatus === 'COMPLETED')
-              {
-                <iframe
-                  [src]="uservideo.vedio.videourl | safeUrlPipe"
-                  class="sidebar-thumbnail"
-                  frameborder="0"
-                  allowfullscreen>
-                </iframe>
-              }
-                @else
-                {
-                  <img
-                    [src]="'https:/play-lh.googleusercontent.com/JfWvH4z_d2CAXA0FUivPmCqounzvlknndva1YHbhMdkySOjMIHv48whXj9-7VcKRoQ'"
-                    class="sidebar-thumbnail"
-                    alt="Thumbnail">
-                    <input type="button" (click)="payForVideo($event,uservideo.id)" value="Pay to watch">
-                }
-                <h3 class="sidebar-title">{{ uservideo.vedio.vediotitle }}</h3>
-              }
-              @else {
-                <img
-                    [src]="'https:/quotefancy.com/media/wallpaper/1600x900/4929570-Rick-Mears-Quote-To-finish-first-you-must-first-finish.jpg'"
-                    class="sidebar-thumbnail"
-                    alt="Thumbnail">
-              }
-          
+             [class.selected]="videoselected()?.id === uservideo.id"> <!-- Add selected class -->
+
+             <div class="playlist-item-left">
+                 <span class="playlist-number">{{ i + 1 }}.</span>
+                 @if(uservideo.accessStatus === 'UNLOCKED' && uservideo.paymentStatus === 'COMPLETED') {
+                     <span class="playlist-icon icon-checkmark">✓</span> <!-- Green checkmark -->
+                 } @else {
+                     <span class="playlist-icon icon-camera">▶</span> <!-- Play icon -->
+                 }
+             </div>
+             <div class="playlist-item-right">
+                 <h3 class="playlist-title">{{ uservideo.vedio.vediotitle }}</h3>
+                 <!-- Assuming videoDuration exists on uservideo.vedio, otherwise use a placeholder -->
+                 <!-- <span class="playlist-duration">{{ uservideo.vedio. || '00:00' }}</span> -->
+             </div>
+
+             <!-- Removed iframe/img/pay button from the listing as per design -->
+             <!-- The actual video player will appear in the main content area when selected -->
+
+             <!-- Keep this part if individual video payment is still a feature, but it's not shown in the playlist list design -->
+             @if(uservideo.accessStatus === 'UNLOCKED' && uservideo.paymentStatus !== 'COMPLETED') {
+                <app-payment-gateway [videoId]="uservideo.id"></app-payment-gateway>
+             }
         </div>
       </div>
       <div *ngIf="loadingVideos" class="loading-message">
@@ -43,4 +39,3 @@
       </div>
     </div>
 </div>
-  

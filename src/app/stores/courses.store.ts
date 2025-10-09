@@ -1,166 +1,176 @@
-import { computed, inject } from "@angular/core";
-import { Course } from "../models/course";
+import { computed, effect, inject, untracked } from "@angular/core";
 import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
-import { CoursemanageService } from "../services/coursemanage.service";
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { pipe, switchMap, debounceTime, distinctUntilChanged, tap } from "rxjs";
 import { firstValueFrom } from "rxjs";
+import { tapResponse } from "@ngrx/operators";
+import { Course } from "../models/course";
+import { CoursemanageService, PaginatedResponse } from "../services/coursemanage.service";
 import { CourseCategoryStore } from "./coursecategory.store";
-import { UserCourseService } from "../userservices/user-course.service";
+
 
 
 type CoursesState = {
     courses: Course[];
+    detailedCourses : Record<number, Course>; 
     selectedCourse: Course | null;
-    searchTerm: string;
     isLoading: boolean;
-    isThumnailLoading: boolean;
-    error: string | null;
-    successMessage: string | null;
+    isMutating: boolean;
+    isLoadingNextPage: boolean;
+    loadError: string | null;
+    mutationError: string | null;
+    searchTerm: string;
+    pageNumber: number;
+    pageSize: number;
+    hasMorePages: boolean;
 }
 
 const initialState: CoursesState = {
     courses: [],
+    detailedCourses: {},
     selectedCourse: null,
-    searchTerm:'',
     isLoading: false,
-    isThumnailLoading: false,
-    error: null,
-    successMessage: null
-}
-
+    isMutating: false,
+    isLoadingNextPage: false,
+    loadError: null,
+    mutationError: null,
+    searchTerm: '',
+    pageNumber: 0,
+    pageSize: 10,
+    hasMorePages: false,
+};
 
 export const CoursesStore = signalStore(
-    {providedIn:'root'},
+    { providedIn: 'root' },
     withState(initialState),
+    withMethods((store, courseService = inject(CoursemanageService), categoryStore = inject(CourseCategoryStore)) => {
 
-    withMethods((state) => {
-        const courseService = inject(CoursemanageService);
-        const userCourseService = inject(UserCourseService);
+        const requestParams = computed(() => ({
+            page: store.pageNumber(),
+            size: store.pageSize(),
+            searchTerm: store.searchTerm(),
+            categoryIds: categoryStore.selectedCategories().map(c => c.id),
+        }));
+
+        const loadCourses = rxMethod<ReturnType<typeof requestParams>>(
+            pipe(
+                debounceTime(300),
+                tap(()=>console.log(store.hasMorePages())),
+                distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+                switchMap(params => 
+                    methods.load(params)
+                ),
+            )
+        );
+        
+        loadCourses(requestParams);
+        const methods = {
+            load(params:ReturnType<typeof requestParams>)
+            {
+                if(params.page==0)
+                    patchState(store,{isLoading:true,loadError:null})
+                else
+                    patchState(store,{isLoadingNextPage:true,loadError:null})
+                return courseService.getCourses(params).pipe(
+                    tapResponse({
+                        next: (response:PaginatedResponse<Course>) => {
+                            const newCourses = params.page === 0 
+                                ? response.content 
+                                : [...store.courses(), ...response.content];
+                
+                            patchState(store, {
+                                courses: newCourses,
+                                hasMorePages: !response.last,
+                            });
+                        },
+                        error: (err: any) => patchState(store, { loadError:err?.message || 'Failed to load courses Please Try Again..' }),
+                        finalize: () => patchState(store, { isLoading: false , isLoadingNextPage:false}),
+                    })
+                )
+            },
+            ...store 
+        };
+
+        effect(() => {
+            categoryStore.selectedCategories(); 
+            untracked(() => {
+                patchState(store,{pageNumber:0,loadError:null})
+            });
+        });
+        
 
         return {
-            async loadCourses(): Promise<void> {
-                patchState(state, { isLoading: true, error: null });
-                try {
-                    const courses = await firstValueFrom(courseService.get());
-                    patchState(state, { courses, isLoading: false });
-                } catch (err: any) {
-                    const error = err?.message || 'Failed to load courses';
-                    patchState(state, { isLoading: false, error });
-                }
+            async resetAndLoad() : Promise<void>
+            {
+                await methods.load(requestParams()).subscribe();
             },
-
-            async loadCourseThumbnail(courseId: number): Promise<void> {
-                const course = state.courses().find(c => c.id === courseId);
-                if(course?.coursethumbnail) return; 
-                patchState(state, { isThumnailLoading: true, error: null });
-                try{
-                    const {coursethumbnail} = await firstValueFrom(courseService.getCourseThumbnail(courseId));
-                    const updatedCourses = state.courses().map(course => 
-                        course.id == courseId ? { ...course, coursethumbnail } : course
-                    );
-                    patchState(state, { courses: updatedCourses, isThumnailLoading: false });
-
-                } catch(err:any){
-                    const error = err?.message || 'Failed to load thumbnail';
-                    patchState(state, { isThumnailLoading: false, error });
-                }
-            },
-
-            async addCourse(course: any): Promise<void> {
-                patchState(state, { isLoading: true, error: null, successMessage: null });
-                try {
-                    const newCourse = await firstValueFrom(courseService.save(course));
-                    patchState(state, {
-                        courses: [...state.courses(), newCourse],
-                        isLoading: false,
-                        successMessage: 'Course added successfully'
-                    });
-                } catch (err: any) {
-                    const error = err?.message || 'Failed to add course';
-                    patchState(state, { isLoading: false, error });
-                }
-            },
-
-            async deleteCourse(courseId: number): Promise<void> {
-                patchState(state, { isLoading: true, error: null, successMessage: null });
-                try {
-                    await firstValueFrom(courseService.deleteCourse(courseId));
-                    patchState(state, {
-                        isLoading: false,
-                        courses: state.courses().filter(c => c.id !== courseId),
-                        successMessage: 'Course deleted successfully'
-                    });
-                } catch (err: any) {
-                    const error = err?.message || 'Failed to delete course';
-                    patchState(state, { isLoading: false, error });
-                }
-            },
-
-            async updateCourse(course: any): Promise<void> {
-                patchState(state, { isLoading: true, error: null, successMessage: null });
-                try {
-                    const updatedCourse = await firstValueFrom(courseService.editCourse(course));
-                    patchState(state, {
-                        isLoading: false,
-                        courses: state.courses().map(c => c.id == updatedCourse.id ? updatedCourse : c),
-                        successMessage: 'Course updated successfully'
-                    });
-                } catch (err: any) {
-                    const error = err?.message || 'Failed to update course';
-                    patchState(state, { isLoading: false, error });
-                }
-            },
-
-            async selectCourse(courseId: number) {
-                if(state.selectedCourse()?.id === courseId) return;
-                if(!courseId){
-                    patchState(state, { selectedCourse: null });
-                    return;
-                }
-                patchState(state, { isLoading: true, error: null });
-                try {
-                     const course =  await firstValueFrom(courseService.getCourse(courseId));
-                     patchState(state, { selectedCourse: course, isLoading: false });
-                } catch (err: any) {
-                    const error = err?.message || 'Failed to load course details';
-                    patchState(state, { isLoading: false, error });
-                }
-               
-            },
-
             setSearchTerm(searchTerm: string): void {
-                patchState(state, { searchTerm });
+                patchState(store, { searchTerm });
             },
             
-            resetState() {
-                patchState(state, initialState);
+            setPageSize(pageSize: number): void {
+                if (store.pageSize() === pageSize) return;
+                patchState(store, { pageSize });
+            },
+
+            loadNextPage(): void {
+                if (!store.isLoading() && !store.isLoadingNextPage() && store.hasMorePages()) {
+                    patchState(store, { pageNumber: store.pageNumber() + 1 });
+                }
+            },
+            
+            async addCourse(courseData: any): Promise<void> {
+                if(store.isMutating()) return;
+                patchState(store, { isMutating: true, mutationError: null });
+                try {
+                    await firstValueFrom(courseService.save(courseData));
+                    patchState(store, { pageNumber: 0 });
+                } catch (err: any) {
+                    patchState(store, { mutationError: err?.message || 'Failed to add course' });
+                } finally {
+                    patchState(store, { isMutating: false });
+                }
+            },
+
+            async selectCourse(courseId: number): Promise<void> {
+                if (store.isLoading() || store.selectedCourse()?.id === courseId) return;
+                const cachedCourse = store.detailedCourses()[courseId];
+                if (cachedCourse) {
+                    patchState(store, { selectedCourse: cachedCourse });
+                    return;
+                }
+                patchState(store, { isLoading: true });
+                try {
+                    const course = await firstValueFrom(courseService.getCourse(courseId));
+                    patchState(store, { selectedCourse: course, isLoading: false , detailedCourses: {...store.detailedCourses(), [courseId]: course} , mutationError:null });
+                } catch(err: any) {
+                    patchState(store, { isLoading: false, loadError: 'Failed to load course details' });
+                }
+            },
+            async deleteCourse(courseId:number):Promise<void>{
+                if(store.isMutating()) return;
+                const originalCourses = [...store.courses()];
+                const updatedCourses = originalCourses.filter(c => c.id !== courseId);
+                patchState(store, { courses: updatedCourses, mutationError: null , isMutating:true });
+                try{
+                    await firstValueFrom(courseService.deleteCourse(courseId));
+                    const updatedDetailedCourses = { ...store.detailedCourses() };
+                    delete updatedDetailedCourses[courseId];
+                    const selectedWasDeleted = store.selectedCourse()?.id === courseId;
+                    patchState(store,{
+                        isMutating:false,
+                        detailedCourses: updatedDetailedCourses,
+                        selectedCourse: selectedWasDeleted ? null : store.selectedCourse()
+                    });
+                } catch (err: any) {
+                    console.log(err);
+                    patchState(store, { courses: originalCourses , isMutating: false ,  mutationError: err?.message || 'Failed to delete course' });
+                    throw err;
+                }
             }
         };
     }),
-
-
-    withComputed((state) => {
-        const categoryStore = inject(CourseCategoryStore);
-
-        return {
-            filteredCourses: computed(() => {
-                const term = state.searchTerm().toLowerCase();
-                const selectedCategories = categoryStore.selectedCategories();
-                const selectedCatIds = new Set(selectedCategories.map(c => c.id));
-                
-                // `state.entities()` is the signal containing all course objects
-                // This is automatically provided by `withEntities`
-                return state.courses()
-                    .filter(course => 
-                        course.coursename.toLowerCase().includes(term)
-                    )
-                    .filter(course => {
-                        if (selectedCatIds.size === 0) return true;
-                        return selectedCatIds.has(course.categoryId); 
-                    });
-            }),
-            
-            // totalCourses is now simpler
-            totalCourses: computed(() => state.courses().length),
-        }
-    })
+    withComputed(({ courses }) => ({
+        totalCourses: computed(() => courses().length),
+    }))
 );

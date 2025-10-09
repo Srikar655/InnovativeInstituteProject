@@ -1,0 +1,162 @@
+
+:host {
+  display: contents;
+}
+
+.course-item {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+.course-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.1);
+}
+.course-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.course-thumbnail {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+.course-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.course-item:hover .course-image {
+  transform: scale(1.05);
+}
+.enroll-tag {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+  color: #1a1a1e;
+  padding: 6px 14px 6px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.enroll-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #28a745;
+  border-radius: 50%;
+}
+
+
+.course-info {
+  padding: 20px;
+  text-align: left;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+.course-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 15px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.price-and-arrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+.course-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #343a40;
+  margin: 0;
+}
+.arrow-button {
+  background-color: #f1f3f5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
+}
+.arrow-icon {
+  font-size: 24px; 
+  color: #495057;
+  transition: color 0.2s ease;
+}
+
+.course-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+}
+.delete-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(5px);
+  color: #dc3545;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: scale(0.8);
+}
+.course-item:hover .delete-button {
+  opacity: 1;
+  transform: scale(1);
+}
+.delete-button:hover {
+  background-color: #dc3545;
+  color: #ffffff;
+  transform: scale(1.1) rotate(10deg);
+}
+
+
+
+.course-item:hover .enroll-tag,
+.course-item:hover .arrow-button,
+.course-item.is-long-pressing .enroll-tag,
+.course-item.is-long-pressing .arrow-button {
+  opacity: 1;
+  transform: none;
+}
+.course-item:hover .arrow-button {
+  background-color: #bb5050;
+}
+.course-item:hover .arrow-icon {
+  color: #ffffff;
+}

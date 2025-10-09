@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  margin: 40px auto;
+  max-width: 600px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.icon {
+  font-size: 64px;
+  color: #bb5050; /* Your primary theme red */
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #343a40;
+  margin: 0 0 10px 0;
+}
+
+.message {
+  font-size: 1rem;
+  color: #6c757d;
+  max-width: 450px;
+  line-height: 1.6;
+  margin: 0 0 25px 0;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #bb5050; /* Your primary theme red */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.button .material-icons {
+  font-size: 20px;
+}
+.button:hover {
+  background-color: #a14444; /* A slightly darker red on hover */
+  transform: translateY(-2px);
+}
+.button:active {
+  transform: translateY(0);
+}

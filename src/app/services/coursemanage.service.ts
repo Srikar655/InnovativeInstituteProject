@@ -1,11 +1,17 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, OnInit, Signal, signal } from '@angular/core';
 import { Course } from '../models/course';
-import { forkJoin, Observable, switchMap, tap } from 'rxjs';
+import { catchError, forkJoin, Observable, switchMap, tap } from 'rxjs';
 import { Vedio } from '../models/vedio';
 import { Task } from '../models/task';
 import { FormGroup } from '@angular/forms';
 import { Category } from '../models/Category';
+import { ErrorHandlingService } from './error-handling.service';
+
+export interface PaginatedResponse<T> {
+  content: T[];
+  last: boolean;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +22,7 @@ export class CoursemanageService {
   url:string="http://localhost:9090/api/courses";
   url2:string="http://localhost:9090/api/coursecategories";
 
-  constructor(private httpClient:HttpClient) { }
+  constructor(private httpClient:HttpClient , private errorService:ErrorHandlingService) { }
   courseSignal=signal<Course[]>([]);
   category=signal<Category[]>([]);
   
@@ -27,28 +33,16 @@ export class CoursemanageService {
 
 
   save(form: any) {
-    const headers = { 'X-Show-Spinner': 'true' };
-   return  this.httpClient.post(this.url+'/add',form,{headers}).pipe(
-    tap(
-      (res:any)=>
-      {
-        this.courseSignal().push(res);
-      }
-    )
-   );
+   return  this.httpClient.post(this.url+'/add',form,);
   }
   
   
-  get() {
-    const headers = { 'X-Show-Spinner': 'true' };
-   return  this.httpClient.get<Course[]>(`${this.url}/getAll`,{headers}).pipe(
-      tap(
-        (courses:any)=>{
-          this.courseSignal.set(courses)
-        }
-      )
+  getCourses(params?: { page?: number; size?: number; searchTerm?: string; categoryIds?: number[] }): Observable<PaginatedResponse<Course>> {
+    return this.httpClient.get<PaginatedResponse<Course>>(`${this.url}/getAll`, {params}).pipe(
+      catchError(this.errorService.handleError)
     );
   }
+  
 
   getCourseThumbnail(courseId: number) {
     return this.httpClient.get(`${this.url}/findCourseThumbnail?courseId=`+courseId).pipe(
@@ -83,15 +77,9 @@ export class CoursemanageService {
     );
   }
   deleteCourse(id: number) {
-    const headers = { 'X-Show-Spinner': 'true' };
-    const requestUrl = this.url +'/delete?courseId='+id;
-    return this.httpClient.delete<any>(requestUrl,{headers}).pipe(
-      tap(
-        (res:any)=>
-        {
-          this.courseSignal().splice(this.courseSignal().findIndex(c => c.id === id), 1);
-        }
-      ) );
+    return this.httpClient.delete<any>(`${this.url}/delete/${id}`).pipe(
+      catchError(this.errorService.handleError)
+    );
   }
   
  
@@ -107,7 +95,7 @@ export class CoursemanageService {
   }
   getCategories()
   {
-    return this.httpClient.get(this.url2,{headers:{'X-Show-Spinner': 'true'}}).pipe(
+    return this.httpClient.get(this.url2).pipe(
       tap(
         (res:any)=>
         {

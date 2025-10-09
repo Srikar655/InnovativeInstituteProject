@@ -3,10 +3,11 @@ import { UserVideosmanageService } from '../../userservices/user-videosmanage.se
 import { UserVideos } from '../../models/user-videos';
 import { SafeUrlPipePipe } from "../../pipes/safe-url-pipe.pipe";
 import { CommonModule } from '@angular/common';
+import { PaymentGatewayComponent } from "../../sharedcomponents/payment-gateway/payment-gateway.component";
 
 @Component({
   selector: 'app-videos-display',
-  imports: [SafeUrlPipePipe,CommonModule],
+  imports: [ CommonModule, PaymentGatewayComponent],
   templateUrl: './videos-display.component.html',
   styleUrl: './videos-display.component.css'
 })
@@ -101,48 +102,6 @@ export class VideosDisplayComponent {
         }
       });
   }
-  payForVideo(event:Event,uservideoId: number) {
-      if(event.isTrusted)
-      {
-        this.service.generatePaymentId(uservideoId).subscribe({
-          next:(res:any)=>{
-            console.log(res);
-            const componet=this;
-        const options: any = {
-          "key": "rzp_test_PafRro48qAcsSh", // Razorpay Key ID from Razorpay dashboard
-          "amount": res.amount * 100, // Amount in paise
-          "currency": "INR",
-          "name": "Innovative Tutorials",
-          "description": "Test Transaction",
-          "order_id": res.orderId, // Pass the order ID from backend
-          "handler": function (response: any) {
-            const paymentDetails={
-              orderId:options.order_id,
-              paymentId:response.razorpay_payment_id,
-              signature:response.razorpay_signature,
-            };
-            componet.service.verifypayment(paymentDetails).subscribe({
-              next:(res:any)=>{
-                console.log(componet.videos());
-              },
-              error:(err:any)=>
-              {
-                console.log(err);
-              }
-            })
-          },
-          "theme": {
-            "color": "#3399cc"
-          }
-        };
-        var razorpay=new (window as any).Razorpay(options);
-        razorpay.open();
-          },
-          error:err=>{    
-            console.log(err);
-          }
-        });
-      }
-    }
+  
 
 }

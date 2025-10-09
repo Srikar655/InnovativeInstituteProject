@@ -1,22 +1,41 @@
-<div class="course-list">
-  <div class="course-item" *ngFor="let course of courseSignal(); let i = index">
-    <a [routerLink]="['/adminHomePage/managecourses', course.id]" class="course-link">
-      <div class="course-thumbnail">
-        <img [src]="course?.coursethumbnail ? 'data:image/png;base64,' + course.coursethumbnail : 'https://as2.ftcdn.net/v2/jpg/01/02/45/61/1000_F_102456100_OOTt9tI6c4RQUf2BVpAR4rUPF5qmS3Ah.jpg'" 
-             alt="Loading" 
-             class="course-image" 
-             id="course-{{ course.id }}" 
-             #courseItem />
-      </div>
+<div class="homepage-layout">
+  <div class="filter-area">
+    <app-searching></app-searching>
+  </div>
 
-      <div class="course-info">
-        <h3>{{ course.coursename }}</h3>
-        <p class="course-price">  {{ course.courseprice | currency:'INR':'symbol' }}</p>
+  <div class="scroll-container" #scrollContainer>
+    @if (coursesStore.loadError()) {
+      <app-error-message 
+        [message]="coursesStore.loadError() || ''" 
+        (retry)="onReload()"
+      />
+    } @else if(coursesStore.totalCourses()>0) {
+      <div class="course-list">
+        @for (course of coursesStore.courses(); track course.id) {
+          <app-course-card 
+            [course]="course" 
+            mode="admin" 
+            (delete)="onDeleteCourse($event)"
+            [isMutating]="coursesStore.isMutating()"
+          />
+        }
       </div>
-    </a>
-    <!-- Add Edit and Delete Buttons Here -->
-    <div class="course-actions">
-      <button (click)="deleteCourse(course.id, $event)" class="delete-button">✖</button>
-    </div>
+    }
+    
+    @if (coursesStore.isLoading() && coursesStore.courses().length === 0) {
+      <app-loading></app-loading>
+    } @else if (!coursesStore.isLoading() && coursesStore.courses().length === 0 && !coursesStore.loadError()) {
+      <app-nothing-found 
+        [message]="'No courses found. Try adding a new course or adjusting your search.'"
+      />
+    }
+
+    @if (coursesStore.isLoadingNextPage()) {
+      <app-loading></app-loading>
+    }
+    
+    @if (!coursesStore.isLoading() && coursesStore.hasMorePages()) {
+      <div #loadingTrigger></div>
+    }
   </div>
 </div>

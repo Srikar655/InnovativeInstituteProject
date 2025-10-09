@@ -1,3 +1,4 @@
+/* course-detail-component.css */
 /*
 ============================================
   DEFINITIVE FIX FOR COURSE DETAILS PAGE
@@ -10,7 +11,7 @@
 
 .page-container {
   display: flex;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 90px); /* Adjust based on header height if any */
   gap: 30px;
   padding: 30px;
 }
@@ -25,32 +26,34 @@
 }
 
 /* Themed Scrollbar Styling */
-.main-content, .desktop-sidebar, .course-features {
+.main-content, .desktop-sidebar, .custom-scrollbar { /* Added .custom-scrollbar */
   scrollbar-width: thin;
   scrollbar-color: #bb5050 #f0f2f5;
 }
-.main-content::-webkit-scrollbar, .desktop-sidebar::-webkit-scrollbar, .course-features::-webkit-scrollbar {
+.main-content::-webkit-scrollbar, .desktop-sidebar::-webkit-scrollbar, .custom-scrollbar::-webkit-scrollbar { /* Added .custom-scrollbar */
   width: 8px;
 }
-.main-content::-webkit-scrollbar-track, .desktop-sidebar::-webkit-scrollbar-track, .course-features::-webkit-scrollbar-track {
+.main-content::-webkit-scrollbar-track, .desktop-sidebar::-webkit-scrollbar-track, .custom-scrollbar::-webkit-scrollbar-track { /* Added .custom-scrollbar */
   background: transparent;
 }
-.main-content::-webkit-scrollbar-thumb, .desktop-sidebar::-webkit-scrollbar-thumb, .course-features::-webkit-scrollbar-thumb {
+.main-content::-webkit-scrollbar-thumb, .desktop-sidebar::-webkit-scrollbar-thumb, .custom-scrollbar::-webkit-scrollbar-thumb { /* Added .custom-scrollbar */
   background-color: #c7c7c7;
   border-radius: 10px;
 }
-.main-content:hover::-webkit-scrollbar-thumb, .desktop-sidebar:hover::-webkit-scrollbar-thumb, .course-features:hover::-webkit-scrollbar-thumb {
-  background-color: #bb5050; 
+.main-content:hover::-webkit-scrollbar-thumb, .desktop-sidebar:hover::-webkit-scrollbar-thumb, .custom-scrollbar:hover::-webkit-scrollbar-thumb { /* Added .custom-scrollbar */
+  background-color: #bb5050;
 }
 
+
 .desktop-sidebar {
-  flex: 0 0 380px; 
+  flex: 0 0 380px;
   height: 100%;
   overflow-y: auto;
+  border-radius: 12px; /* Ensure sidebar itself has rounded corners */
 }
 
 .main-content {
-  flex: 1; 
+  flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -63,68 +66,97 @@
 .course-hero {
   display: flex;
   flex-direction: row;
-  gap: 0;
-  align-items: center; /* Better vertical alignment */
+  gap: 30px; /* Increased gap for better separation */
+  align-items: center;
+  padding: 25px; /* Added padding to the card */
 }
 
 .hero-thumbnail {
-  flex: 0 0 45%; /* Set a solid basis of 45% */
-  max-width: 500px; /* And a max-width to keep it sane */
+  flex: 0 0 45%;
+  max-width: 500px;
   aspect-ratio: 16 / 9;
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Added subtle shadow to thumbnail */
+  background-color: #f0f2f5; /* Fallback for thumbnail */
+  display: flex; /* For centering text if needed */
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 .hero-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+/* If you want to overlay text "Explore your course" as in the image */
+/*
+.hero-thumbnail::before {
+  content: "Explore your course";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  z-index: 1;
+}
+*/
 
 .hero-content {
   flex: 1 1 auto;
+  padding-left: 15px; /* Added left padding */
 }
 
 .course-title {
   font-size: 2.6rem;
   font-weight: 800;
-  color: #bb5050; 
+  color: #1a202c; /* Darker, more professional color */
   margin: 0 0 10px 0;
 }
 
 .course-price {
   font-size: 1.7rem;
   font-weight: 700;
-  color: #f07609; 
-  margin-bottom: 0;
+  color: #2f855a; /* A pleasant green for price */
+  margin-bottom: 15px; /* Increased margin */
 }
 
 .course-description {
-  color: #555;
+  color: #4a5568;
   line-height: 1.6;
   font-size: 1.05rem;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  margin-bottom: 15px; /* Added margin below description */
 }
 .course-description.expanded {
   -webkit-line-clamp: unset;
 }
 .read-more-btn {
   background: none; border: none;
-  color: #bb5050; font-weight: bold;
+  color: #4299e1; /* A clear blue for action */
+  font-weight: bold;
   cursor: pointer; padding: 0; margin-top: 0;
   font-size: 1rem;
+  text-decoration: underline; /* Emphasize it's a link */
+}
+.read-more-btn:hover {
+  color: #2b6cb0;
 }
 
 /* ================================================== */
 /* FIX: USING CSS GRID FOR PERFECT HEIGHT MATCH       */
 /* ================================================== */
 .about-and-trailer-container {
-  display: grid; /* USE GRID */
-  grid-template-columns: 4fr 5fr; /* Define column ratios (40% / 50%) */
+  display: grid;
+  grid-template-columns: 4fr 5fr;
   gap: 30px;
-  align-items: stretch; /* Default, but explicit */
+  align-items: stretch;
 }
 
 .features-card {
@@ -139,7 +171,7 @@
 }
 
 .trailer-card .video-container {
-  flex-grow: 1; /* This will make the video fill the grid cell height */
+  flex-grow: 1;
 }
 
 .card h3 {
@@ -149,17 +181,32 @@
 }
 
 .course-features {
-  list-style-type: '✓'; 
-  padding-left: 20px;
-  overflow-y: auto;
+  list-style-type: none; /* Remove default list style */
+  padding-left: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+  overflow-y: auto; /* Enable scrolling for features list */
+  flex-grow: 1; /* Allow features list to fill available height */
 }
 .course-features li {
-  margin-bottom: 10px; padding-left: 10px;
+  margin-bottom: 10px;
+  padding-left: 0;
+  color: #4a5568;
+  font-size: 1.05rem;
+  display: flex; /* For aligning checkmark */
+  align-items: flex-start;
+}
+.course-features li::before {
+  content: '✓'; /* Using checkmark character for consistent look */
+  color: #2f855a; /* Green checkmark */
+  font-weight: bold;
+  margin-right: 10px;
+  line-height: 1.6; /* Match line-height of text */
 }
 
 .video-container {
-  position: relative; padding-bottom: 56.25%; 
+  position: relative; padding-bottom: 56.25%;
   height: 0; overflow: hidden; border-radius: 8px;
+  background-color: #000; /* Dark background for video container */
 }
 .video-container iframe {
   position: absolute; top: 0; left: 0;
@@ -167,7 +214,7 @@
 }
 
 .video-player-section h2 {
-  font-size: 1.8rem; font-weight: 700; color: #bb5050;
+  font-size: 1.8rem; font-weight: 700; color: #1a202c;
   margin: 0 0 15px 0;
 }
 
@@ -184,34 +231,40 @@
     flex-direction: column; height: auto;
     padding: 10px; gap: 20px;
   }
-  
+
   .desktop-sidebar { display: none; }
   .main-content { overflow-y: visible; gap: 20px; }
-  
-  .course-hero { flex-direction: column; }
-  .hero-thumbnail { max-width: none; }
-  .hero-thumbnail img { object-fit: contain; }
-  .hero-content { width: 100%; text-align: center; padding-top: 0; }
 
+  .course-hero { flex-direction: column; text-align: center; gap: 20px; }
+  .hero-thumbnail { max-width: 100%; flex: none; width: 100%; }
+  .hero-thumbnail img { object-fit: contain; }
+  .hero-content { width: 100%; padding-left: 0; }
   .course-title { font-size: 1.8rem; }
   .course-price { font-size: 1.4rem; }
+  .course-description { text-align: left; } /* Keep description left-aligned for readability */
+  .read-more-btn { margin-top: 10px; }
+
 
   /* Revert Grid to block for stacking */
   .about-and-trailer-container {
-    display: block;
+    display: flex; /* Use flex for stacking */
+    flex-direction: column;
+    gap: 20px;
   }
   .features-card, .trailer-card {
-    margin-bottom: 20px; /* Add space when stacked */
+    margin-bottom: 0; /* Removed explicit margin, rely on gap */
+    width: 100%;
   }
   .features-card {
-    height: auto; 
-    max-height: 250px;
+    height: auto;
+    max-height: 250px; /* Maintain max-height for scrollability on mobile */
   }
 
   /* Mobile Tabs */
   .mobile-tabs {
     display: flex; width: 100%; background-color: #fff;
     border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden; /* Ensures active border doesn't overflow */
   }
   .mobile-tabs button {
     flex: 1; padding: 15px; font-size: 1rem;
@@ -222,8 +275,11 @@
   .mobile-tabs button.active {
     color: #bb5050; border-bottom-color: #bb5050;
   }
-  
-  .about-course-container, .mobile-playlist-container { display: none; }
+
+  /* Control visibility of content based on active tab */
+  .about-course-container, .mobile-playlist-container {
+    display: none; /* Hidden by default */
+  }
   .mobile-playlist-container.visible, .about-course-container.visible {
     display: flex; flex-direction: column; gap: 20px;
   }
